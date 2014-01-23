@@ -1,0 +1,5 @@
+<?php
+$dbuser = 'marcel';
+$dbpass = 'xxx';
+$app_location = 'Edinburgh';
+?>
