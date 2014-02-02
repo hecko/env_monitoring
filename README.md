@@ -23,3 +23,12 @@ cd env_monitoring/server
 npm install
 node ./app.js
 ```
+
+== Raspberry PI client
+
+=== Installation
+
+```bash
+cd /opt
+git clone https://github.com/hecko/env_monitoring.git
+```
