@@ -11,10 +11,15 @@ Three parts
 === Prerequisities
 
 * mongodb database (mongod running)
+* node package manager (npm)
 
 === Running
 
 ```bash
-cd server
+sudo npm install n -g
+sudo n stable
+git clone https://github.com/hecko/env_monitoring.git
+cd env_monitoring/server
+npm install
 node ./app.js
 ```
