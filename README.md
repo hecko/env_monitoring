@@ -31,4 +31,5 @@ node ./app.js
 ```bash
 cd /opt
 git clone https://github.com/hecko/env_monitoring.git
+cp env_monitoring/rpi_client/env.cron /etc/cron.d/env
 ```
