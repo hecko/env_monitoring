@@ -1,0 +1,3 @@
+#!/bin/bash
+
+curl -X POST http://188.226.135.53:3000/put -d '{ "token": "ahoj svet", "data": [ { "key":"temp", "val":31.34 }, { "key" : "other", "val": "gaga" } ] }' -H "Content-Type: application/json"

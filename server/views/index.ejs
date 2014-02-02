@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+  <head>
+    <meta charset="utf-8">
+    <title><%= title %></title>
+    <link href="//cdnjs.cloudflare.com/ajax/libs/nvd3/1.1.14-beta/nv.d3.css" rel="stylesheet" type="text/css">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400,700' rel='stylesheet' type='text/css'>
+    <link href='/stylesheets/style.css' rel='stylesheet' type="text/css">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  </head>
+
+<style>
+#menu { position: fixed;
+        top: 0px;
+        left: 0px;
+        width: 100%;
+        height: 22px;
+        padding: 5px;
+        padding-left: 100px;
+        box-shadow: 0px 2px 5px #888888;
+        font-family: 'Open Sans', sans-serif;
+        font-weight: 300;
+        float: left;
+      }
+
+
+.menu-title { font-weight: 700;
+              padding-right: 20px;
+}
+
+.menu-option { padding-right: 5px;
+               padding-left:  5px;
+}
+
+.menu-option-div { text-align:    center;
+                   display: inline;
+}
+
+body {
+  overflow-y:scroll;
+  margin: 0;
+  padding: 0;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 300; 
+}
+
+svg {
+  overflow: hidden;
+}
+
+div {
+  border: 0;
+  margin: 0;
+}
+
+#offsetDiv {
+  margin-left: 100px;
+  margin-top: 80px;
+}
+
+#test1 {
+  margin: 0;
+}
+
+#test1 svg {
+  height: 300px;
+  width:  690px;
+}
+</style>
+<body>
+
+<div id="menu">
+  <div class="menu-option-div"><span class="menu-title"><%= title %></span></div>
+  <div class="menu-option-div"><span class="menu-option"><a href="/">Home</a></span></div>
+  <div class="menu-option-div"><span class="menu-option"><a href="/contact">Contact</a></span></div>
+</div>
+<div id="offsetDiv">
+  <div>
+    <span id="last_value" style="font-size: 40pt;">loading last value...</span><br>
+    <span id="last_time">loading last time...</span>
+  </div>
+  <div id="test1" class='with-3d-shadow with-transitions'>
+    <svg></svg>
+  </div>
+</div>
+
+<script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/nvd3/1.1.14-beta/nv.d3.js"></script>
+<script>
+
+var mydata = tempData();
+console.log(mydata);
+var chart;
+
+nv.addGraph(function() {
+  chart = nv.models.scatterChart()
+                .showDistX(true)
+                .showDistY(true)
+                .useVoronoi(true)
+                .color(d3.scale.category10().range())
+                .transitionDuration(300);
+
+  chart.xAxis.tickFormat(function(d){ return d3.time.format('%x') (new Date(d));});
+  chart.yAxis.tickFormat(d3.format('.02f'));
+  chart.tooltipContent(function(key) {
+      return '<h5>' + key + '</h5>';
+  });
+
+  d3.select('#test1 svg')
+    .datum(mydata)
+    .call(chart);
+
+  nv.utils.windowResize(chart.update);
+
+  chart.dispatch.on('stateChange', function(e) { ('New State:', JSON.stringify(e)); });
+
+  return chart;
+});
+
+function redraw() {
+  d3.select('#test1 svg')
+   .datum(mydata)
+   .call(chart);
+};
+
+setInterval(function() {
+  mydata = tempData();
+  redraw();
+},50000);
+
+function tempData() {
+  var json = (function () {
+    var json = null;
+    $.ajax({
+          'async': false,
+          'global': false,
+          'url': "/scatter",
+          'dataType': "json",
+          'success': function (data) {
+              json = data;
+          }
+    });
+    $('#last_value').html(json[0]['last_value'] + "&deg;C");
+    $('#last_time').html(json[0]['last_time']);
+    return json;
+  })();
+  return json;
+}
+
+</script>
+
+<script>
+/*
+$("#menu").hover(function() {
+  $(this).css("background","rgba(53, 212, 0, 0.9)");
+},               function() {
+  $(this).css("background","rgba(53, 212, 0, 0.3)");
+});
+*/
+var pagesize = $(document).height();
+setInterval(function() {
+  var pos = (100 / pagesize * $(document).scrollTop())/100;
+  console.log(pos);
+  $("#menu").css("background","rgba(53, 212, 0, " + pos + ")");
+}, 1000);
+</script>
+
+<% include footer %>
