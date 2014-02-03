@@ -4,9 +4,9 @@ import time
 import urllib2
 import json
 
-def send_to_cloud(what, value):
+def send_to_cloud(token, what, value):
     print "Sending this: " + str(what) + ", value: " + str(value)
-    data = { 'token': 'rpi_hacklab',
+    data = { 'token': token,
              'data': [ {
                       'timestamp': int(time.time()),
                       'key':       what,
