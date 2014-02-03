@@ -1,7 +1,8 @@
 <% include header %>
 <div id="offsetDiv">
   <div>
-    <span id="last_value" style="font-size: 40pt;">loading last value...</span><br>
+    <span id="last_value" style="font-size: 40pt;">loading last value (m/s)...</span><br>
+    <span id="orig_last_value" style="font-size: 20pt;">loading last value (anemometer frequency)...</span><br>
     <span id="last_time">loading last time...</span>
   </div>
   <div id="test1" class='with-3d-shadow with-transitions'>
@@ -66,28 +67,13 @@ function tempData() {
           }
     });
     $('#last_value').html(Number(json[0]['last_value']).toFixed(2) + " m/s");
+    $('#orig_last_value').html(Number(json[0]['orig_last_value']).toFixed(2) + " Hz");
     $('#last_time').html(json[0]['last_time']);
     return json;
   })();
   return json;
 }
 
-</script>
-
-<script>
-/*
-$("#menu").hover(function() {
-  $(this).css("background","rgba(53, 212, 0, 0.9)");
-},               function() {
-  $(this).css("background","rgba(53, 212, 0, 0.3)");
-});
-*/
-var pagesize = $(document).height();
-setInterval(function() {
-  var pos = (100 / pagesize * $(document).scrollTop())/100;
-  console.log(pos);
-  $("#menu").css("background","rgba(53, 212, 0, " + pos + ")");
-}, 1000);
 </script>
 
 <% include footer %>

@@ -66,29 +66,13 @@ function tempData() {
               json = data;
           }
     });
-    $('#last_value').html(json[0]['last_value'] + "&deg;C");
+    $('#last_value').html(Number(json[0]['last_value']).toFixed(2) + "&deg;C");
     $('#last_time').html(json[0]['last_time']);
     return json;
   })();
   return json;
 }
 
-</script>
-
-<script>
-/*
-$("#menu").hover(function() {
-  $(this).css("background","rgba(53, 212, 0, 0.9)");
-},               function() {
-  $(this).css("background","rgba(53, 212, 0, 0.3)");
-});
-*/
-var pagesize = $(document).height();
-setInterval(function() {
-  var pos = (100 / pagesize * $(document).scrollTop())/100;
-  console.log(pos);
-  $("#menu").css("background","rgba(53, 212, 0, " + pos + ")");
-}, 1000);
 </script>
 
 <% include footer %>

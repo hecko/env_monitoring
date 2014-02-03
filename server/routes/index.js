@@ -61,7 +61,7 @@ exports.scatter = function(req, res){
         data[0]['last_value'] = points[0].val * 1.212 + 0.252;
         data[0]['orig_last_value'] = Number(points[0].val);
     } else {
-        data[0]['last_value']  = points[0].time;
+        data[0]['last_value']  = points[0].val;
     }
     data[0]['last_time']  = points[0].time;
     

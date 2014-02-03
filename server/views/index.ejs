@@ -75,20 +75,4 @@ function tempData() {
 
 </script>
 
-<script>
-/*
-$("#menu").hover(function() {
-  $(this).css("background","rgba(53, 212, 0, 0.9)");
-},               function() {
-  $(this).css("background","rgba(53, 212, 0, 0.3)");
-});
-*/
-var pagesize = $(document).height();
-setInterval(function() {
-  var pos = (100 / pagesize * $(document).scrollTop())/100;
-  console.log(pos);
-  $("#menu").css("background","rgba(53, 212, 0, " + pos + ")");
-}, 1000);
-</script>
-
 <% include footer %>
