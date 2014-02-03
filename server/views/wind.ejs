@@ -1,5 +1,4 @@
 <% include header %>
-
 <div id="offsetDiv">
   <div>
     <span id="last_value" style="font-size: 40pt;">loading last value...</span><br>
@@ -60,13 +59,13 @@ function tempData() {
     $.ajax({
           'async': false,
           'global': false,
-          'url': "/scatter/ttoken/temp",
+          'url': "/scatter/hacklab/wind_freq",
           'dataType': "json",
           'success': function (data) {
               json = data;
           }
     });
-    $('#last_value').html(json[0]['last_value'] + "&deg;C");
+    $('#last_value').html(Number(json[0]['last_value']).toFixed(2) + " m/s");
     $('#last_time').html(json[0]['last_time']);
     return json;
   })();

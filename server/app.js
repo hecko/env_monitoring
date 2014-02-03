@@ -31,9 +31,11 @@ if ('development' == app.get('env')) {
 }
 
 app.get('/',        routes.index);
+app.get('/g/temp',        routes.temp);
+app.get('/g/wind',        routes.wind);
 app.get('/users',   user.list);
-app.get('/get',     routes.get);
-app.get('/scatter', routes.scatter);
+app.get('/get/:token/:key',     routes.get);
+app.get('/scatter/:token/:key', routes.scatter);
 
 app.post('/put',  routes.put);
 
