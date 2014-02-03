@@ -1,7 +1,7 @@
 <% include header %>
 <div id="offsetDiv">
   <div>
-    <span id="last_value" style="font-size: 40pt;">loading last value (m/s)...</span><br>
+    <span id="last_value" style="font-size: 40pt;">loading last value (mps)...</span><br>
     <span id="orig_last_value" style="font-size: 20pt;">loading last value (anemometer frequency)...</span><br>
     <span id="last_time">loading last time...</span>
   </div>
@@ -66,7 +66,7 @@ function tempData() {
               json = data;
           }
     });
-    $('#last_value').html(Number(json[0]['last_value']).toFixed(2) + " m/s");
+    $('#last_value').html(Number(json[0]['last_value']).toFixed(2) + " mph");
     $('#orig_last_value').html(Number(json[0]['orig_last_value']).toFixed(2) + " Hz");
     $('#last_time').html(json[0]['last_time']);
     return json;

@@ -58,7 +58,7 @@ exports.scatter = function(req, res){
                   values: [],
                }];
     if (req.params.key == "wind_freq") {
-        data[0]['last_value'] = points[0].val * 1.212 + 0.252;
+        data[0]['last_value'] = (points[0].val * 1.212 + 0.252) * 2.2369362920544;
         data[0]['orig_last_value'] = Number(points[0].val);
     } else {
         data[0]['last_value']  = points[0].val;
@@ -69,7 +69,7 @@ exports.scatter = function(req, res){
         if (p.time && p.val) {
           var val;
           if (req.params.key == "wind_freq") {
-              val = p.val * 1.212 + 0.252; //frequency to m/s
+              val = (p.val * 1.212 + 0.252) * 2.2369362920544; //frequency to miles per hour
           } else {
               val = p.val;
           };
