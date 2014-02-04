@@ -13,48 +13,11 @@
 <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/nvd3/1.1.14-beta/nv.d3.js"></script>
 <script>
-
-var mydata = tempData();
-console.log(mydata);
-var chart;
-
-nv.addGraph(function() {
-  chart = nv.models.scatterChart()
-                .showDistX(true)
-                .showDistY(true)
-                .useVoronoi(true)
-                .color(d3.scale.category10().range())
-                .transitionDuration(300);
-
-  chart.xAxis.tickFormat(function(d){ return d3.time.format('%x') (new Date(d));});
-  chart.yAxis.tickFormat(d3.format('.02f'));
-  chart.tooltipContent(function(key) {
-      return '<h5>' + key + '</h5>';
-  });
-
-  d3.select('#test1 svg')
-    .datum(mydata)
-    .call(chart);
-
-  nv.utils.windowResize(chart.update);
-
-  chart.dispatch.on('stateChange', function(e) { ('New State:', JSON.stringify(e)); });
-
-  return chart;
-});
-
-function redraw() {
-  d3.select('#test1 svg')
-   .datum(mydata)
-   .call(chart);
-};
-
 setInterval(function() {
-  mydata = tempData();
-  redraw();
+  mydata = getData();
 },50000);
 
-function tempData() {
+function getData() {
   var json = (function () {
     var json = null;
     $.ajax({
@@ -66,12 +29,14 @@ function tempData() {
               json = data;
           }
     });
-    $('#last_value').html(json[0]['last_value'] + "&deg;C");
+    $('#last_value').html(Number(json[0]['last_value']).toFixed(2) + "&deg;C");
     $('#last_time').html(json[0]['last_time']);
     return json;
   })();
   return json;
 }
+
+getData();
 
 </script>
 

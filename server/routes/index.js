@@ -5,7 +5,6 @@ var title = 'Gust';
 
 exports.index = function(req, res){
   Point.find( function (err, points, count) {
-    console.log(points);
     res.render('index', { title: title, 
                           points: points
 			});
@@ -14,7 +13,6 @@ exports.index = function(req, res){
 
 exports.wind = function(req, res){
   Point.find( function (err, points, count) {
-    console.log(points);
     res.render('wind', { title: title,
                           points: points
 			});
@@ -23,7 +21,6 @@ exports.wind = function(req, res){
 
 exports.temp = function(req, res){
   Point.find( function (err, points, count) {
-    console.log(points);
     res.render('temp', { title: title,
                           points: points
 			});
@@ -31,7 +28,6 @@ exports.temp = function(req, res){
 };
 
 exports.put = function ( req, res ){
-  console.log(req.body);
   req.body.data.forEach( function(d) {
     var new_point = { token         : req.body.token,
                       key           : d.key,
@@ -39,7 +35,6 @@ exports.put = function ( req, res ){
                       time          : d.timestamp * 1000,
                       time_received : new Date(),
                     };
-    console.log(new_point);
     new Point(new_point).save( function( err, point, count ){});
   });
   res.render( 'put', { "message" : req.body } );
@@ -52,7 +47,7 @@ exports.get = function(req, res){
 };
 
 exports.scatter = function(req, res){
-  var q = Point.find({ token: req.params.token, key: req.params.key }, 'time key val -_id').sort({'time':-1}).limit(300);
+  var q = Point.find({ token: req.params.token, key: req.params.key }, 'time key val -_id').sort({'time':-1}).limit(1000);
   q.exec(function (err, points, count) {
     var data = [{ key: req.params.key,
                   values: [],
