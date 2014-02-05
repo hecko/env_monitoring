@@ -5,7 +5,6 @@ import urllib2
 import json
 
 def send_to_cloud(token, what, value):
-    print "Sending this: " + str(what) + ", value: " + str(value)
     data = { 'token': token,
              'data': [ {
                       'timestamp': int(time.time()),
