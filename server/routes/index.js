@@ -1,12 +1,23 @@
 var mongoose = require( 'mongoose' );
 var Point    = mongoose.model( 'Point' );
+var User     = mongoose.model( 'User' );
 
 var title = 'Gust';
 
+// also called dashboard
+exports.dashboard = function(req, res){
+  Point.find( function (err, points, count) {
+    res.render('dashboard', { title:  title, 
+                              points: points,
+                              user:   req.user
+			    });
+  });
+};
+
 exports.index = function(req, res){
   Point.find( function (err, points, count) {
-    res.render('index', { title: title, 
-                          points: points
+    res.render('index', { title:  title, 
+                          points: points,
 			});
   });
 };
@@ -14,7 +25,7 @@ exports.index = function(req, res){
 exports.wind = function(req, res){
   Point.find( function (err, points, count) {
     res.render('wind', { title: title,
-                          points: points
+                         points: points
 			});
   });
 };
@@ -38,6 +49,16 @@ exports.put = function ( req, res ){
     new Point(new_point).save( function( err, point, count ){});
   });
   res.render( 'put', { "message" : req.body } );
+};
+
+exports.create_user = function ( req, res ){
+  console.log(req.params);
+  var new_user = { username: req.query.username,
+                   password: req.query.password
+                 };
+  new User(new_user).save( function( err, user, count ){});
+  console.log(new_user);
+  res.render( 'put', { "message" : new_user } );
 };
 
 exports.get = function(req, res){
