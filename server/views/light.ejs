@@ -1,0 +1,89 @@
+<% include header %>
+
+<div id="offsetDiv">
+  <div>
+    <span id="last_value" style="font-size: 40pt;">loading last value ...</span><br>
+    <span id="orig_last_value" style="font-size: 20pt;">loading last value (anemometer frequency)...</span><br>
+    <span id="last_time">loading last time...</span>
+  </div>
+  <div id="test1" class='with-3d-shadow with-transitions'>
+    <svg></svg>
+  </div>
+</div>
+
+<script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/nvd3/1.1.14-beta/nv.d3.js"></script>
+<script>
+
+var mydata = tempData();
+console.log(mydata);
+var chart;
+
+nv.addGraph(function() {
+  chart = nv.models.scatterChart()
+                .showDistX(true)
+                .showDistY(true)
+                .showLegend(false)
+                .useVoronoi(true)
+                .color(d3.scale.category10().range())
+                .transitionDuration(300);
+
+  chart.yAxis.tickFormat(d3.format('.02f'));
+  chart.xAxis.tickFormat(function(d) { 
+      var format = d3.time.format("%Y-%m-%d");
+      return format(new Date(d));
+  });
+  chart.tooltipContent(function(key, x, y) {
+      var format = d3.time.format("%X");
+      return format(new Date(x));
+  });
+  chart.tooltipYContent(function(key, x, y) {
+      return '<h7>' + y + ' mph</h7>';
+  });
+  chart.tooltipXContent(function(key,x,y) { return y; });
+
+  d3.select('#test1 svg')
+    .datum(mydata)
+    .call(chart);
+
+  nv.utils.windowResize(chart.update);
+
+  chart.dispatch.on('stateChange', function(e) { ('New State:', JSON.stringify(e)); });
+
+  return chart;
+});
+
+function redraw() {
+  d3.select('#test1 svg')
+   .datum(mydata)
+   .call(chart);
+};
+
+setInterval(function() {
+  mydata = tempData();
+  redraw();
+},50000);
+
+function tempData() {
+  var json = (function () {
+    var json = null;
+    $.ajax({
+          'async': false,
+          'global': false,
+          'url': "/scatter/hacklab/light",
+          'dataType': "json",
+          'success': function (data) {
+              json = data;
+          }
+    });
+    $('#last_value').html(Number(json[0]['last_value']).toFixed(2) + " units");
+    $('#orig_last_value').html(Number(json[0]['orig_last_value']).toFixed(2) + " units");
+    $('#last_time').html(json[0]['last_time']);
+    return json;
+  })();
+  return json;
+}
+
+</script>
+
+<% include footer %>
