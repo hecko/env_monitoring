@@ -1,0 +1,42 @@
+<% include header %>
+<div id="offsetDiv">
+  <div>
+    <span id="last_value" style="font-size: 40pt;">loading last value...</span><br>
+    <span id="last_time">loading last time...</span>
+  </div>
+  <div id="test1" class='with-3d-shadow with-transitions'>
+    <svg></svg>
+  </div>
+</div>
+
+<script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/nvd3/1.1.14-beta/nv.d3.js"></script>
+<script>
+setInterval(function() {
+  mydata = getData();
+},50000);
+
+function getData() {
+  var json = (function () {
+    var json = null;
+    $.ajax({
+          'async': false,
+          'global': false,
+          'url': "/scatter/ttoken/temp",
+          'dataType': "json",
+          'success': function (data) {
+              json = data;
+          }
+    });
+    $('#last_value').html(Number(json[0]['last_value']).toFixed(2) + "&deg;C");
+    $('#last_time').html(json[0]['last_time']);
+    return json;
+  })();
+  return json;
+}
+
+getData();
+
+</script>
+
+<% include footer %>

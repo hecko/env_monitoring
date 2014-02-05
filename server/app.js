@@ -81,6 +81,7 @@ app.get('/dashboard', routes.dashboard);
 app.get('/',          routes.index);
 app.get('/g/temp',    routes.temp);
 app.get('/g/wind',    routes.wind);
+app.get('/g/light',   routes.light);
 app.get('/users',     user.list);
 app.get('/user',      user.profile);
 app.get('/get/:token/:key',     routes.get);

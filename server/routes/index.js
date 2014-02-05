@@ -30,6 +30,14 @@ exports.wind = function(req, res){
   });
 };
 
+exports.light = function(req, res){
+  Point.find( function (err, points, count) {
+    res.render('light', { title: title,
+                         points: points
+			});
+  });
+};
+
 exports.temp = function(req, res){
   Point.find( function (err, points, count) {
     res.render('temp', { title: title,
