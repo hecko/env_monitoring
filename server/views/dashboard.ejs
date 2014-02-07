@@ -1,24 +1,37 @@
 <% include header %>
+<style>
+div .last_div {
+  margin: 0px;
+  padding: 5px;
+  width: 280px;
+  text-align: center;
+  display:inline-block;
+}
+.last_value {
+  color: white;
+  font-size: 40pt;
+}
+</style>
 <div id="offsetDiv">
-  <div>
-    <div style="float: left; background: #910000; margin: 3px; padding: 3px; width: 280px; text-align: center">
+  <div style="text-align:center;">
+    <div class="last_div" style="background: #910000">
       <span style="color: white; font-size: 10pt">Temp:<br></span>
-      <span id="last_temp" style="color: white; font-size: 40pt;">loading last value...</span><br>
+      <span id="last_temp" class="last_value">loading last value...</span><br>
       <span id="last_temp_time" style="color: white; font-size: 10pt"></span>
     </div>
-    <div style="float: left; background: #4572A7; margin: 3px; padding: 3px; width: 280px; text-align: center">
+    <div class="last_div" style="background: #4572A7">
       <span style="color: white; font-size: 10pt">Light:<br></span>
-      <span id="last_light" style=" color: white; font-size: 40pt;">loading last value...</span><br>
+      <span id="last_light" class="last_value">loading last value...</span><br>
       <span id="last_light_time" style="color: white; font-size: 10pt"></span>
     </div>
-    <div style="float: left; background: #8bbc21; margin: 3px; padding: 3px; width: 280px; text-align: center">
+    <div class="last_div" style="background: #8bbc21">
       <span style="color: white; font-size: 10pt">Wind speed:<br></span>
-      <span id="last_wind_speed" style="color: white; font-size: 40pt;">loading last value...</span><br>
+      <span id="last_wind_speed" class="last_value">loading last value...</span><br>
       <span id="last_wind_speed_time" style="color: white; font-size: 10pt"></span>
     </div>
-    <div style="float: left; background: #f28f43; margin: 3px; padding: 3px; width: 280px; text-align: center">
+    <div class="last_div" style="background: #f28f43">
       <span style="color: white; font-size: 10pt">Wind direction:<br></span>
-      <span id="last_wind_direction" style="color: white; font-size: 40pt;">loading last value...</span><br>
+      <span id="last_wind_direction" class="last_value">loading last value...</span><br>
       <span id="last_wind_direction_time" style="color: white; font-size: 10pt"></span>
     </div>
   </div>
@@ -52,7 +65,7 @@ function getLast(token, key, unit, dec) {
 }
 
 function getAllLast() {
-  getLast('hacklab','temp','&deg;C',2);
+  getLast('hacklab','temp','&deg;C',1);
   getLast('hacklab','light','',0);
   getLast('hacklab','wind_speed','m/s',2);
   getLast('hacklab','wind_direction','&deg;',0);
@@ -181,7 +194,7 @@ var secondoptions = {
             },
             yAxis: [{
                 title: {
-                    text: 'Wind speed',
+                    text: 'Wind speed (m/s)',
                     style: {
                         color: '#8bbc21'
                     }
@@ -194,7 +207,7 @@ var secondoptions = {
                 min: 0
               },{
                 title: {
-                    text: 'Wind direction',
+                    text: 'Wind direction (deg)',
                     style: {
                         color: '#f28f43'
                     }
