@@ -4,22 +4,17 @@ var User     = mongoose.model( 'User' );
 
 var title = 'Gust';
 
-// also called dashboard
 exports.dashboard = function(req, res){
-  Point.find( function (err, points, count) {
     res.render('dashboard', { title:  title, 
-                              points: points,
+                              token:  req.params.token,
                               user:   req.user
 			    });
-  });
 };
 
 exports.index = function(req, res){
-  Point.find( function (err, points, count) {
-    res.render('index', { title:  title, 
-                          points: points,
-			});
-  });
+    res.render('dashboard', { title:  title, 
+                              token:  'hacklab'
+                            });
 };
 
 exports.wind = function(req, res){
@@ -28,6 +23,10 @@ exports.wind = function(req, res){
                          points: points
 			});
   });
+};
+
+exports.hc = function(req, res){
+  res.render('hc', { title: title });
 };
 
 exports.light = function(req, res){

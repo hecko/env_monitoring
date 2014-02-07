@@ -2,10 +2,11 @@
   <head>
     <meta charset="utf-8">
     <title><%= title %></title>
-    <link href="//cdnjs.cloudflare.com/ajax/libs/nvd3/1.1.14-beta/nv.d3.css" rel="stylesheet" type="text/css">
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400,700' rel='stylesheet' type='text/css'>
     <link href='/stylesheets/style.css' rel='stylesheet' type="text/css">
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script src="http://code.highcharts.com/highcharts.js"></script>
+    <script src="http://code.highcharts.com/modules/exporting.js"></script>
   </head>
 
 <style>
@@ -21,6 +22,7 @@
         font-weight: 300;
         float: left;
         background: rgba(200,200,200,0.8);
+        z-index: 100;
       }
 
 
@@ -55,6 +57,7 @@ div {
 
 #offsetDiv {
   margin-left: 100px;
+  margin-right: 100px;
   margin-top: 80px;
 }
 
@@ -72,10 +75,6 @@ div {
 
 <div id="menu">
   <div class="menu-option-div"><span class="menu-title"><%= title %></span></div>
-  <div class="menu-option-div"><span class="menu-option"><a href="/">Dashboard</a></span></div>
-  <div class="menu-option-div"><span class="menu-option"><a href="/g/wind">Wind</a></span></div>
-  <div class="menu-option-div"><span class="menu-option"><a href="/g/temp">Temperature</a></span></div>
-  <div class="menu-option-div"><span class="menu-option"><a href="/g/light">Light</a></span></div>
-  <div class="menu-option-div"><span class="menu-title"><% //user.username %></span></div> 
+  <div class="menu-option-div"><span class="menu-option"><a href="/dashboard/<%= token %>">Dashboard for <%= token %></a></span></div>
   <div class="menu-option-div"><span class="menu-option"><a href="/logout">Logout</a></span></div>
 </div>

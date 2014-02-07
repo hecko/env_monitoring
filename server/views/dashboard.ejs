@@ -4,38 +4,200 @@
     <span id="last_value" style="font-size: 40pt;">loading last value...</span><br>
     <span id="last_time">loading last time...</span>
   </div>
-  <div id="test1" class='with-3d-shadow with-transitions'>
-    <svg></svg>
-  </div>
+  <div id="first-container" style="min-width: 600px; height: 200px; margin: 0 auto"></div>
+  <div id="second-container" style="min-width: 600px; height: 200px; margin: 0 auto"></div>
 </div>
 
-<script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/nvd3/1.1.14-beta/nv.d3.js"></script>
 <script>
 setInterval(function() {
-  mydata = getData();
-},50000);
+  firstchart.series[0].setData(getData('/hc/<%= token %>/temp'),true);
+  firstchart.series[1].setData(getData('/hc/<%= token %>/light'),true);
+  secondchart.series[0].setData(getData('/hc/<%= token %>/wind_freq'),true);
+},30000);
 
-function getData() {
+function getData(query) {
   var json = (function () {
     var json = null;
     $.ajax({
           'async': false,
           'global': false,
-          'url': "/scatter/ttoken/temp",
+          'url': query,
           'dataType': "json",
           'success': function (data) {
+              data.push([ new Date().getTime(), null ]);
               json = data;
           }
     });
-    $('#last_value').html(Number(json[0]['last_value']).toFixed(2) + "&deg;C");
-    $('#last_time').html(json[0]['last_time']);
+//    $('#last_value').html(Number(json[0]['last_value']).toFixed(2) + " mph");
+//    $('#orig_last_value').html(Number(json[0]['orig_last_value']).toFixed(2) + " Hz");
+//    $('#last_time').html(json[0]['last_time']);
     return json;
   })();
   return json;
 }
 
-getData();
+var firstoptions = {
+            chart: {
+                renderTo: 'first-container',
+                type: 'spline',
+                zoomType: 'x',
+            },
+            legend: {
+                enabled: false
+            },
+            title: {
+                text: 'temperature and light level'
+            },
+            xAxis: {
+                type: 'datetime',
+                dateTimeLabelFormats: { // don't display the dummy year
+                    month: '%e. %b',
+                    year: '%b'
+                }
+            },
+            yAxis: [{
+                title: {
+                    text: 'Temp (C)',
+                    style: {
+                        color: '#910000'
+                    }
+                },
+                labels: {
+                    style: {
+                        color: '#910000'
+                    }
+                },
+              },{
+                title: {
+                    text: 'Light level',
+                    style: {
+                        color: '#4572A7'
+                    }
+                },
+                labels: {
+                    style: {
+                        color: '#4572A7'
+                    }
+                },
+                opposite: true,
+		min: 0
+            }],
+            tooltip: {
+                shared: false,
+                crosshairs: true,
+                followPointer: true,
+                shadow: false
+            },
+            plotOptions: {
+                spline: {
+                    lineWidth: 1,
+                    marker: {
+                        enabled: false
+                    },
+                    states: {
+                        hover: {
+                            enabled: false
+                        }
+                    }
+                }
+            },
+            series: [
+              {
+                name: 'Temp',
+                color: '#910000',
+                tooltip: {
+                    valueSuffix: 'C',
+                },
+                data: getData('/hc/<%= token %>/temp'),
+              },{
+                name: 'Light',
+                color: '#4572A7',
+                tooltip: {
+                    valueSuffix: 'U',
+                },
+                data: getData('/hc/<%= token %>/light'),
+                yAxis: 1
+              }
+            ]
+        };
+
+//wind
+var secondoptions = {
+            chart: {
+                renderTo: 'second-container',
+                type: 'spline',
+                zoomType: 'x',
+            },
+            legend: {
+                enabled: false
+            },
+            title: {
+                text: 'wind speed and direction' 
+            },
+            xAxis: {
+                type: 'datetime',
+                dateTimeLabelFormats: { // don't display the dummy year
+                    month: '%e. %b',
+                    year: '%b'
+                }
+            },
+            yAxis: [{
+                title: {
+                    text: 'Wind freq (Hz)'
+                },
+                min: 0
+              },{
+                title: {
+                    text: 'Wind direction',
+                    style: {
+                        color: '#8bbc21'
+                    }
+                },
+                labels: {
+                    style: {
+                        color: '#8bbc21'
+                    }
+                },
+                min: 0,
+                max: 360,
+                opposite: true
+              }
+            ],
+            tooltip: {
+                shared: false,
+                crosshairs: true,
+                followPointer: true
+            },
+            plotOptions: {
+                spline: {
+                    lineWidth: 1,
+                    marker: {
+                        enabled: false
+                    },
+                    states: {
+                        hover: {
+                            enabled: false
+                        }
+                    }
+                }
+            },
+    series: [{
+      name: 'Wind speed',
+      tooltip: {
+        valueSuffix: 'Hz',
+      },
+      data: getData('/hc/<%= token %>/wind_freq') 
+    }]
+  };
+
+var firstchart;
+var secondchart;
+$(function () {
+    $(document).ready(function() {
+        firstchart  = new Highcharts.Chart(firstoptions);
+        secondchart = new Highcharts.Chart(secondoptions);
+    })
+});
 
 </script>
 

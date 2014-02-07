@@ -5,11 +5,12 @@
 
 require('./db');
 var passport = require('passport');
-var express = require('express');
-var routes = require('./routes');
-var user = require('./routes/user');
-var http = require('http');
-var path = require('path');
+var express  = require('express');
+var routes   = require('./routes');
+var api      = require('./routes/api');
+var user     = require('./routes/user');
+var http     = require('http');
+var path     = require('path');
 
 var app = express();
 
@@ -77,7 +78,7 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
-app.get('/dashboard', routes.dashboard);
+app.get('/dashboard/:token', routes.dashboard);
 app.get('/',          routes.index);
 app.get('/g/temp',    routes.temp);
 app.get('/g/wind',    routes.wind);
@@ -86,6 +87,7 @@ app.get('/users',     user.list);
 app.get('/user',      user.profile);
 app.get('/get/:token/:key',     routes.get);
 app.get('/scatter/:token/:key', routes.scatter);
+app.get('/hc/:token/:key',      api.hc);
 app.get('/create_user',         routes.create_user);
 
 app.get('/login', passport.authenticate('local', { successRedirect: '/dashboard',
