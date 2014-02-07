@@ -17,7 +17,7 @@ var app = express();
 // all environments
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.bodyParser());
-app.set('port', process.env.PORT || 3000);
+app.set('port', process.env.PORT || 3001);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.use(express.favicon());
@@ -88,6 +88,7 @@ app.get('/user',      user.profile);
 app.get('/get/:token/:key',     routes.get);
 app.get('/scatter/:token/:key', routes.scatter);
 app.get('/hc/:token/:key',      api.hc);
+app.get('/last/:token/:key',    api.last);
 app.get('/create_user',         routes.create_user);
 
 app.get('/login', passport.authenticate('local', { successRedirect: '/dashboard',

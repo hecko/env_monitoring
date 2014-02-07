@@ -11,6 +11,7 @@
     "ejs-locals": "*",
     "mongoose": "*",
     "passport": "*",
-    "passport-local": "*"
+    "passport-local": "*",
+    "q": "~1.0.0"
   }
 }

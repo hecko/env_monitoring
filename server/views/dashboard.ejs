@@ -1,10 +1,28 @@
 <% include header %>
 <div id="offsetDiv">
   <div>
-    <span id="last_value" style="font-size: 40pt;">loading last value...</span><br>
-    <span id="last_time">loading last time...</span>
+    <div style="float: left; background: #910000; margin: 3px; padding: 3px; width: 280px; text-align: center">
+      <span style="color: white; font-size: 10pt">Temp:<br></span>
+      <span id="last_temp" style="color: white; font-size: 40pt;">loading last value...</span><br>
+      <span id="last_temp_time" style="color: white; font-size: 10pt"></span>
+    </div>
+    <div style="float: left; background: #4572A7; margin: 3px; padding: 3px; width: 280px; text-align: center">
+      <span style="color: white; font-size: 10pt">Light:<br></span>
+      <span id="last_light" style=" color: white; font-size: 40pt;">loading last value...</span><br>
+      <span id="last_light_time" style="color: white; font-size: 10pt"></span>
+    </div>
+    <div style="float: left; background: #8bbc21; margin: 3px; padding: 3px; width: 280px; text-align: center">
+      <span style="color: white; font-size: 10pt">Wind speed:<br></span>
+      <span id="last_wind_speed" style="color: white; font-size: 40pt;">loading last value...</span><br>
+      <span id="last_wind_speed_time" style="color: white; font-size: 10pt"></span>
+    </div>
+    <div style="float: left; background: #f28f43; margin: 3px; padding: 3px; width: 280px; text-align: center">
+      <span style="color: white; font-size: 10pt">Wind direction:<br></span>
+      <span id="last_wind_direction" style="color: white; font-size: 40pt;">loading last value...</span><br>
+      <span id="last_wind_direction_time" style="color: white; font-size: 10pt"></span>
+    </div>
   </div>
-  <div id="first-container" style="min-width: 600px; height: 200px; margin: 0 auto"></div>
+  <div id="first-container" style="clear: both; min-width: 600px; height: 200px; margin: 0 auto"></div>
   <div id="second-container" style="min-width: 600px; height: 200px; margin: 0 auto"></div>
 </div>
 
@@ -12,8 +30,34 @@
 setInterval(function() {
   firstchart.series[0].setData(getData('/hc/<%= token %>/temp'),true);
   firstchart.series[1].setData(getData('/hc/<%= token %>/light'),true);
-  secondchart.series[0].setData(getData('/hc/<%= token %>/wind_freq'),true);
-},30000);
+  secondchart.series[0].setData(getData('/hc/<%= token %>/wind_speed'),true);
+  secondchart.series[1].setData(getData('/hc/<%= token %>/wind_direction'),true);
+  getAllLast();
+},50000);
+
+function getLast(token, key, unit, dec) {
+  var json = (function () {
+    var json = null;
+    $.ajax({
+          'async': false,
+          'global': false,
+          'url': '/last/' + token + '/' + key,
+          'dataType': "json",
+          'success': function (data) {
+              $('#last_' + key).html(Number(data['val']).toFixed(dec) + unit);
+              $('#last_' + key + '_time').html(((new Date() - new Date(data['time']))/1000/60).toFixed(0) + " min ago");
+          }
+    });
+  })();
+}
+
+function getAllLast() {
+  getLast('hacklab','temp','&deg;C',2);
+  getLast('hacklab','light','',0);
+  getLast('hacklab','wind_speed','m/s',2);
+  getLast('hacklab','wind_direction','&deg;',0);
+};
+getAllLast();
 
 function getData(query) {
   var json = (function () {
@@ -28,9 +72,6 @@ function getData(query) {
               json = data;
           }
     });
-//    $('#last_value').html(Number(json[0]['last_value']).toFixed(2) + " mph");
-//    $('#orig_last_value').html(Number(json[0]['orig_last_value']).toFixed(2) + " Hz");
-//    $('#last_time').html(json[0]['last_time']);
     return json;
   })();
   return json;
@@ -112,9 +153,6 @@ var firstoptions = {
               },{
                 name: 'Light',
                 color: '#4572A7',
-                tooltip: {
-                    valueSuffix: 'U',
-                },
                 data: getData('/hc/<%= token %>/light'),
                 yAxis: 1
               }
@@ -143,12 +181,7 @@ var secondoptions = {
             },
             yAxis: [{
                 title: {
-                    text: 'Wind freq (Hz)'
-                },
-                min: 0
-              },{
-                title: {
-                    text: 'Wind direction',
+                    text: 'Wind speed',
                     style: {
                         color: '#8bbc21'
                     }
@@ -156,7 +189,20 @@ var secondoptions = {
                 labels: {
                     style: {
                         color: '#8bbc21'
+                    },
+                },
+                min: 0
+              },{
+                title: {
+                    text: 'Wind direction',
+                    style: {
+                        color: '#f28f43'
                     }
+                },
+                labels: {
+                    style: {
+                        color: '#f28f43'
+                    },
                 },
                 min: 0,
                 max: 360,
@@ -183,10 +229,16 @@ var secondoptions = {
             },
     series: [{
       name: 'Wind speed',
+      color: '#8bbc21',
       tooltip: {
-        valueSuffix: 'Hz',
+        valueSuffix: 'm/s',
       },
-      data: getData('/hc/<%= token %>/wind_freq') 
+      data: getData('/hc/<%= token %>/wind_speed') 
+    },{
+      name: 'Wind direction',
+      color: '#f28f43',
+      data: getData('/hc/<%= token %>/wind_direction'),
+      yAxis: 1
     }]
   };
 
