@@ -9,6 +9,7 @@
 import serial
 import time
 import re
+from math import *
 
 import lib.utils as utils
 
@@ -17,7 +18,7 @@ time.sleep(3)
 
 ser.write("2")
 out = ser.readline()
-light = re.split(':|\\n', out)[2]
+light = int(re.split(':|\\n', out)[2])
 utils.send_to_cloud("hacklab", "light", light)
 
 sleep = 5
@@ -32,10 +33,11 @@ utils.send_to_cloud("hacklab", "wind_speed", mps)
 
 ser.write("3")
 out = ser.readline()
-light = re.split(':|\\n', out)[2]
+light = float(re.split(':|\\n', out)[2])
 utils.send_to_cloud("hacklab", "temp", light)
 
 ser.write("4")
 out = ser.readline()
 wv = re.split(':|\\n', out)[2]
+wv = int(wv)%360
 utils.send_to_cloud("hacklab", "wind_direction", wv)
