@@ -1,0 +1,152 @@
+<% include header %>
+<style>
+div .last_div {
+  margin: 1px;
+  padding: 5px;
+  width: 280px;
+  text-align: center;
+  display:inline-block;
+}
+.last_value {
+  color: white;
+  font-size: 40pt;
+}
+</style>
+<div id="offsetDiv">
+  <div id="first-container" style="clear: both; min-width: 600px; height: 200px; margin: 0 auto"></div>
+</div>
+
+<script>
+setInterval(function() {
+  firstchart.series[0].setData(getData('/hc/<%= token %>/dht_temp'),true);
+  firstchart.series[1].setData(getData('/hc/<%= token %>/ds_temp'),true);
+},50000);
+
+function getLast(token, key, unit, dec) {
+  var json = (function () {
+    var json = null;
+    $.ajax({
+          'async': false,
+          'global': false,
+          'url': '/last/' + token + '/' + key,
+          'dataType': "json",
+          'success': function (data) {
+              $('#last_' + key).html(Number(data['val']).toFixed(dec) + unit);
+              $('#last_' + key + '_time').html(((new Date() - new Date(data['time']))/1000/60).toFixed(0) + " min ago");
+          }
+    });
+  })();
+}
+
+function getData(query) {
+  var json = (function () {
+    var json = null;
+    $.ajax({
+          'async': false,
+          'global': false,
+          'url': query,
+          'dataType': "json",
+          'success': function (data) {
+              data.push([ new Date().getTime(), null ]);
+              json = data;
+          }
+    });
+    return json;
+  })();
+  return json;
+}
+
+var firstoptions = {
+            chart: {
+                renderTo: 'first-container',
+                type: 'spline',
+                zoomType: 'x',
+            },
+            legend: {
+                enabled: false
+            },
+            title: {
+                text: 'temperature compare - DHT and DS sensors'
+            },
+            xAxis: {
+                type: 'datetime',
+                dateTimeLabelFormats: { // don't display the dummy year
+                    month: '%e. %b',
+                    year: '%b'
+                }
+            },
+            yAxis: [{
+                title: {
+                    text: 'DHT',
+                    style: {
+                        color: '#910000'
+                    }
+                },
+                labels: {
+                    style: {
+                        color: '#910000'
+                    }
+                },
+                min: 15,
+                max: 25
+              },{
+                title: {
+                    text: 'DS',
+                    style: {
+                        color: '#8bbc21'
+                    }
+                },
+                labels: {
+                    style: {
+                        color: '#8bbc21'
+                    }
+                },
+                min: 15,
+                max: 25
+            }],
+            tooltip: {
+                shared: false,
+                crosshairs: true,
+                followPointer: true,
+                shadow: false
+            },
+            plotOptions: {
+                spline: {
+                    lineWidth: 1,
+                    marker: {
+                        enabled: false
+                    },
+                    states: {
+                        hover: {
+                            enabled: false
+                        }
+                    }
+                }
+            },
+            series: [
+              {
+                name: 'DHT Temp',
+                color: '#910000',
+                tooltip: {
+                    valueSuffix: 'C',
+                },
+                data: getData('/hc/<%= token %>/dht_temp'),
+              },{
+                name: 'DS Temp',
+                color: '#8bbc21',
+                data: getData('/hc/<%= token %>/ds_temp'),
+                yAxis: 1
+              }
+            ]
+        };
+
+var firstchart;
+$(function () {
+    $(document).ready(function() {
+        firstchart  = new Highcharts.Chart(firstoptions);
+    })
+});
+
+</script>
+
+<% include footer %>

@@ -1,7 +1,7 @@
 <% include header %>
 <style>
 div .last_div {
-  margin: 0px;
+  margin: 1px;
   padding: 5px;
   width: 280px;
   text-align: center;
@@ -16,15 +16,20 @@ div .last_div {
   <div style="text-align:center;">
     <div class="last_div" style="background: #910000">
       <span style="color: white; font-size: 10pt">Temp:<br></span>
-      <span id="last_temp" class="last_value">loading last value...</span><br>
-      <span id="last_temp_time" style="color: white; font-size: 10pt"></span>
+      <span id="last_dht_temp" class="last_value">loading last value...</span><br>
+      <span id="last_dht_temp_time" style="color: white; font-size: 10pt"></span>
     </div>
-    <div class="last_div" style="background: #4572A7">
+    <div class="last_div" style="background: #77a1e5">
+      <span style="color: white; font-size: 10pt">Rel. humidity:<br></span>
+      <span id="last_humidity" class="last_value">loading last value...</span><br>
+      <span id="last_humidity_time" style="color: white; font-size: 10pt"></span>
+    </div>
+    <div class="last_div" style="background: #8bbc21">
       <span style="color: white; font-size: 10pt">Light:<br></span>
       <span id="last_light" class="last_value">loading last value...</span><br>
       <span id="last_light_time" style="color: white; font-size: 10pt"></span>
-    </div>
-    <div class="last_div" style="background: #8bbc21">
+    </div><br>
+    <div class="last_div" style="background: #4572A7">
       <span style="color: white; font-size: 10pt">Wind speed:<br></span>
       <span id="last_wind_speed" class="last_value">loading last value...</span><br>
       <span id="last_wind_speed_time" style="color: white; font-size: 10pt"></span>
@@ -41,8 +46,9 @@ div .last_div {
 
 <script>
 setInterval(function() {
-  firstchart.series[0].setData(getData('/hc/<%= token %>/temp'),true);
+  firstchart.series[0].setData(getData('/hc/<%= token %>/dht_temp'),true);
   firstchart.series[1].setData(getData('/hc/<%= token %>/light'),true);
+  firstchart.series[2].setData(getData('/hc/<%= token %>/humidity'),true);
   secondchart.series[0].setData(getData('/hc/<%= token %>/wind_speed'),true);
   secondchart.series[1].setData(getData('/hc/<%= token %>/wind_direction'),true);
   getAllLast();
@@ -65,10 +71,11 @@ function getLast(token, key, unit, dec) {
 }
 
 function getAllLast() {
-  getLast('hacklab','temp','&deg;C',1);
-  getLast('hacklab','light','',0);
-  getLast('hacklab','wind_speed','m/s',2);
-  getLast('hacklab','wind_direction','&deg;',0);
+  getLast('<%= token %>','dht_temp','&deg;C',1);
+  getLast('<%= token %>','humidity','%',1);
+  getLast('<%= token %>','light','%',0);
+  getLast('<%= token %>','wind_speed','m/s',2);
+  getLast('<%= token %>','wind_direction','&deg;',0);
 };
 getAllLast();
 
@@ -100,7 +107,7 @@ var firstoptions = {
                 enabled: false
             },
             title: {
-                text: 'temperature and light level'
+                text: 'temperature, humidity and light level'
             },
             xAxis: {
                 type: 'datetime',
@@ -125,17 +132,17 @@ var firstoptions = {
                 title: {
                     text: 'Light level',
                     style: {
-                        color: '#4572A7'
+                        color: '#8bbc21'
                     }
                 },
                 labels: {
                     style: {
-                        color: '#4572A7'
+                        color: '#8bbc21'
                     }
                 },
                 opposite: true,
 		min: 0,
-                max: 1023
+                max: 100
             }],
             tooltip: {
                 shared: false,
@@ -163,11 +170,16 @@ var firstoptions = {
                 tooltip: {
                     valueSuffix: 'C',
                 },
-                data: getData('/hc/<%= token %>/temp'),
+                data: getData('/hc/<%= token %>/dht_temp'),
               },{
                 name: 'Light',
-                color: '#4572A7',
+                color: '#8bbc21',
                 data: getData('/hc/<%= token %>/light'),
+                yAxis: 1
+              },{
+                name: 'Humidity',
+                color: '#77a1e5',
+                data: getData('/hc/<%= token %>/humidity'),
                 yAxis: 1
               }
             ]
@@ -197,12 +209,12 @@ var secondoptions = {
                 title: {
                     text: 'Wind speed (m/s)',
                     style: {
-                        color: '#8bbc21'
+                        color: '#4572A7'
                     }
                 },
                 labels: {
                     style: {
-                        color: '#8bbc21'
+                        color: '#4572A7'
                     },
                 },
                 min: 0
@@ -243,7 +255,7 @@ var secondoptions = {
             },
     series: [{
       name: 'Wind speed',
-      color: '#8bbc21',
+      color: '#4572A7',
       tooltip: {
         valueSuffix: 'm/s',
       },

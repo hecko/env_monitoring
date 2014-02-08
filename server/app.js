@@ -90,6 +90,7 @@ app.get('/scatter/:token/:key', routes.scatter);
 app.get('/hc/:token/:key',      api.hc);
 app.get('/last/:token/:key',    api.last);
 app.get('/create_user',         routes.create_user);
+app.get('/temp_compare',        routes.temp_compare);
 
 app.get('/login', passport.authenticate('local', { successRedirect: '/dashboard',
                                                    failureRedirect: '/' }));

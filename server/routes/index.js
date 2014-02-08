@@ -17,6 +17,12 @@ exports.index = function(req, res){
                             });
 };
 
+exports.temp_compare = function(req, res){
+    res.render('temp_compare', { title:  title, 
+                                 token:  'hacklab'
+                               });
+};
+
 exports.wind = function(req, res){
   Point.find( function (err, points, count) {
     res.render('wind', { title: title,
