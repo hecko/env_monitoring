@@ -4,7 +4,7 @@
 # 0 - anemometer - reset counter
 # 1 - anemometer
 # 2 - light sensor
-# 3 - temp
+# 3 - temp (ds18b20)
 # 4 - wind vane
 # 5 - DHT temp and humidity sensor
 
@@ -19,14 +19,16 @@ serial_dev = '/dev/ttyACM0'
 #serial_dev = '/dev/tty.usbserial-A9007KLg'
 
 ser = serial.Serial(serial_dev, 9600)
+
+print serial_dev + " initialized. Getting data..."
 time.sleep(3)
 
 ser.write("2")
 out = ser.readline()
-light = int(re.split(':|\\n', out)[2])
+light = 100.0 / 1023.0 * float(re.split(':|\\n', out)[2])
 utils.send_to_cloud("hacklab", "light", light)
 
-sleep = 5
+sleep = 12
 ser.write("0")
 time.sleep(sleep)
 ser.write("1")
@@ -38,8 +40,8 @@ utils.send_to_cloud("hacklab", "wind_speed", mps)
 
 ser.write("3")
 out = ser.readline()
-light = float(re.split(':|\\n', out)[2])
-utils.send_to_cloud("hacklab", "temp", light)
+temp = float(re.split(':|\\n', out)[2])
+utils.send_to_cloud("hacklab", "ds_temp", temp)
 
 ser.write("4")
 out = ser.readline()
