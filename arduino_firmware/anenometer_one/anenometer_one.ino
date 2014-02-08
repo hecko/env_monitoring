@@ -2,6 +2,8 @@
 #include <DallasTemperature.h>
 
 #define ONE_WIRE_BUS 3
+#define WV_PIN A1 //wind vane potencioneter sensor
+#define LED_PIN 4
 
 OneWire oneWire(ONE_WIRE_BUS);
 DallasTemperature sensors(&oneWire);
@@ -22,12 +24,17 @@ void an_signal() {
 
 void setup() {
   pinMode(lightPin, INPUT);
+  pinMode(LED_PIN, OUTPUT);
+  pinMode(WV_PIN, INPUT);
   Serial.begin(9600);
   attachInterrupt(0, an_signal, CHANGE);
   sensors.begin();
+  digitalWrite(LED_PIN, HIGH);
+  delay(100);
+  digitalWrite(LED_PIN, LOW);
 }
 
-void loop() {  
+void loop() {
   if (Serial.available() > 0) {
     req = Serial.read();
     switch(req) {
@@ -42,6 +49,9 @@ void loop() {
       break;
     case '3':
       temp();
+      break;
+    case '4':
+      wv();
       break;
     default:
       Serial.print("unknown command\n");
@@ -70,6 +80,15 @@ void light() {
   Serial.print(":");
   Serial.print("light:");
   Serial.print(lightIntensity);
+  Serial.print("\n");
+}
+
+void wv() { //wind_vane
+  int wv = analogRead(WV_PIN);
+  Serial.print(req);
+  Serial.print(":");
+  Serial.print("wind_vane:");
+  Serial.print(wv);
   Serial.print("\n");
 }
 
