@@ -130,19 +130,27 @@ var firstoptions = {
                 },
               },{
                 title: {
-                    text: 'Light level',
-                    style: {
-                        color: '#8bbc21'
-                    }
-                },
-                labels: {
+                    text: 'Light level (%)',
                     style: {
                         color: '#8bbc21'
                     }
                 },
                 opposite: true,
 		min: 0,
-                max: 100
+                max: 100 
+              },{
+                title: {
+                    text: 'Humidity (rel) (%)',
+                    style: {
+                        color: '#77a1e5'
+                    }
+                },
+                labels: {
+                    enabled: false,
+                },
+                opposite: true,
+		min: 0,
+                max: 100 
             }],
             tooltip: {
                 shared: false,

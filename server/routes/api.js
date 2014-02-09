@@ -5,7 +5,7 @@ var User     = mongoose.model( 'User' );
 
 exports.hc = function(req, res){
   var q = Point.find({ token: req.params.token,
-                       key: req.params.key }, 'time key val -_id').sort({time:-1}).limit(500);
+                       key: req.params.key }, 'time key val -_id').sort({time:-1}).limit(1500);
   q.exec(function (err, points, count) {
     var data = []; 
     points.forEach( function(p) {
