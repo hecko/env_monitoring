@@ -1,15 +1,15 @@
 <% include header %>
 <style>
 div .last_div {
-  margin: 1px;
+  margin: 0px;
   padding: 5px;
-  width: 280px;
+  width: 190px;
   text-align: center;
   display:inline-block;
 }
 .last_value {
   color: white;
-  font-size: 40pt;
+  font-size: 35pt;
 }
 </style>
 <div id="offsetDiv">
@@ -18,39 +18,33 @@ div .last_div {
       <span style="color: white; font-size: 10pt">Temp:<br></span>
       <span id="last_dht_temp" class="last_value">loading last value...</span><br>
       <span id="last_dht_temp_time" style="color: white; font-size: 10pt"></span>
-    </div>
-    <div class="last_div" style="background: #77a1e5">
+    </div><div class="last_div" style="background: #77a1e5">
       <span style="color: white; font-size: 10pt">Rel. humidity:<br></span>
       <span id="last_humidity" class="last_value">loading last value...</span><br>
       <span id="last_humidity_time" style="color: white; font-size: 10pt"></span>
-    </div>
-    <div class="last_div" style="background: #8bbc21">
+    </div><div class="last_div" style="background: #8bbc21">
       <span style="color: white; font-size: 10pt">Light:<br></span>
       <span id="last_light" class="last_value">loading last value...</span><br>
       <span id="last_light_time" style="color: white; font-size: 10pt"></span>
-    </div><br>
-    <div class="last_div" style="background: #4572A7">
+    </div><div class="last_div" style="background: #4572A7">
       <span style="color: white; font-size: 10pt">Wind speed:<br></span>
       <span id="last_wind_speed" class="last_value">loading last value...</span><br>
       <span id="last_wind_speed_time" style="color: white; font-size: 10pt"></span>
-    </div>
-    <div class="last_div" style="background: #f28f43">
+    </div><div class="last_div" style="background: #f28f43">
       <span style="color: white; font-size: 10pt">Wind direction:<br></span>
       <span id="last_wind_direction" class="last_value">loading last value...</span><br>
       <span id="last_wind_direction_time" style="color: white; font-size: 10pt"></span>
     </div>
   </div>
-  <div id="first-container" style="clear: both; min-width: 600px; height: 200px; margin: 0 auto"></div>
-  <div id="second-container" style="min-width: 600px; height: 200px; margin: 0 auto"></div>
+  <div id="temp-container" style="clear: both; min-width: 600px; height: 150px; margin: 0 auto"></div>
+  <div id="humidity-container" style="min-width: 600px; height: 150px; margin: 0 auto"></div>
+  <div id="light-container" style="min-width: 600px; height: 150px; margin: 0 auto"></div>
+  <div id="wind_speed-container" style="min-width: 600px; height: 150px; margin: 0 auto"></div>
+  <div id="wind_direction-container" style="min-width: 600px; height: 150px; margin: 0 auto"></div>
 </div>
 
 <script>
 setInterval(function() {
-  firstchart.series[0].setData(getData('/hc/<%= token %>/dht_temp'),true);
-  firstchart.series[1].setData(getData('/hc/<%= token %>/light'),true);
-  firstchart.series[2].setData(getData('/hc/<%= token %>/humidity'),true);
-  secondchart.series[0].setData(getData('/hc/<%= token %>/wind_speed'),true);
-  secondchart.series[1].setData(getData('/hc/<%= token %>/wind_direction'),true);
   getAllLast();
 },50000);
 
@@ -80,211 +74,83 @@ function getAllLast() {
 getAllLast();
 
 function getData(query) {
-  var json = (function () {
-    var json = null;
-    $.ajax({
+  var json = [];
+  $.ajax({
           'async': false,
           'global': false,
           'url': query,
           'dataType': "json",
           'success': function (data) {
               data.push([ new Date().getTime(), null ]);
-              json = data;
+              json = $.map(data, function(n) {
+                  return [ [ new Date(n[0]), n[1] ] ];
+              });
           }
-    });
-    return json;
-  })();
+  });
   return json;
-}
+};
+</script>
 
-var firstoptions = {
-            chart: {
-                renderTo: 'first-container',
-                type: 'spline',
-                zoomType: 'x',
-            },
-            legend: {
-                enabled: false
-            },
-            title: {
-                text: 'temperature, humidity and light level'
-            },
-            xAxis: {
-                type: 'datetime',
-                dateTimeLabelFormats: { // don't display the dummy year
-                    month: '%e. %b',
-                    year: '%b'
-                }
-            },
-            yAxis: [{
-                title: {
-                    text: 'Temp (C)',
-                    style: {
-                        color: '#910000'
-                    }
-                },
-                labels: {
-                    style: {
-                        color: '#910000'
-                    }
-                },
-              },{
-                title: {
-                    text: 'Light level (%)',
-                    style: {
-                        color: '#8bbc21'
-                    }
-                },
-                opposite: true,
-		min: 0,
-                max: 100 
-              },{
-                title: {
-                    text: 'Humidity (rel) (%)',
-                    style: {
-                        color: '#77a1e5'
-                    }
-                },
-                labels: {
-                    enabled: false,
-                },
-                opposite: true,
-		min: 0,
-                max: 100 
-            }],
-            tooltip: {
-                shared: false,
-                crosshairs: true,
-                followPointer: true,
-                shadow: false
-            },
-            plotOptions: {
-                spline: {
-                    lineWidth: 1,
-                    marker: {
-                        enabled: false
-                    },
-                    states: {
-                        hover: {
-                            enabled: false
-                        }
-                    }
-                }
-            },
-            series: [
-              {
-                name: 'Temp',
-                color: '#910000',
-                tooltip: {
-                    valueSuffix: 'C',
-                },
-                data: getData('/hc/<%= token %>/dht_temp'),
-              },{
-                name: 'Light',
-                color: '#8bbc21',
-                data: getData('/hc/<%= token %>/light'),
-                yAxis: 1
-              },{
-                name: 'Humidity',
-                color: '#77a1e5',
-                data: getData('/hc/<%= token %>/humidity'),
-                yAxis: 1
-              }
-            ]
-        };
-
-//wind
-var secondoptions = {
-            chart: {
-                renderTo: 'second-container',
-                type: 'spline',
-                zoomType: 'x',
-            },
-            legend: {
-                enabled: false
-            },
-            title: {
-                text: 'wind speed and direction' 
-            },
-            xAxis: {
-                type: 'datetime',
-                dateTimeLabelFormats: { // don't display the dummy year
-                    month: '%e. %b',
-                    year: '%b'
-                }
-            },
-            yAxis: [{
-                title: {
-                    text: 'Wind speed (m/s)',
-                    style: {
-                        color: '#4572A7'
-                    }
-                },
-                labels: {
-                    style: {
-                        color: '#4572A7'
-                    },
-                },
-                min: 0
-              },{
-                title: {
-                    text: 'Wind direction (deg)',
-                    style: {
-                        color: '#f28f43'
-                    }
-                },
-                labels: {
-                    style: {
-                        color: '#f28f43'
-                    },
-                },
-                min: 0,
-                max: 360,
-                opposite: true
-              }
-            ],
-            tooltip: {
-                shared: false,
-                crosshairs: true,
-                followPointer: true
-            },
-            plotOptions: {
-                spline: {
-                    lineWidth: 1,
-                    marker: {
-                        enabled: false
-                    },
-                    states: {
-                        hover: {
-                            enabled: false
-                        }
-                    }
-                }
-            },
-    series: [{
-      name: 'Wind speed',
-      color: '#4572A7',
-      tooltip: {
-        valueSuffix: 'm/s',
-      },
-      data: getData('/hc/<%= token %>/wind_speed') 
-    },{
-      name: 'Wind direction',
-      color: '#f28f43',
-      data: getData('/hc/<%= token %>/wind_direction'),
-      yAxis: 1
-    }]
-  };
-
-var firstchart;
-var secondchart;
-$(function () {
-    $(document).ready(function() {
-        firstchart  = new Highcharts.Chart(firstoptions);
-        secondchart = new Highcharts.Chart(secondoptions);
-    })
-});
-
+<script type="text/javascript">
+new Dygraph(
+    document.getElementById("temp-container"),
+    getData('/hc/<%= token %>/dht_temp'),
+    {
+        rollPeriod: 20,
+        showRoller: true,
+        ylabel: 'Temperature (C)',
+        labels: ['date', 'y'],
+        colors: [ '#910000' ],
+    }
+);
+new Dygraph(
+    document.getElementById("humidity-container"),
+    getData('/hc/<%= token %>/humidity'),
+    {
+        rollPeriod: 20,
+        showRoller: true,
+        ylabel: 'Humidity (rel.) (%)',
+        valueRange: [ 0, null ],
+        labels: ['date', 'y'],
+        colors: [ '#77a1e5' ],
+    }
+);
+new Dygraph(
+    document.getElementById("light-container"),
+    getData('/hc/<%= token %>/light'),
+    {
+        rollPeriod: 20,
+        showRoller: true,
+        ylabel: 'Light (%)',
+        valueRange: [ 0, 100 ],
+        labels: ['date', 'y'],
+        colors: [ '#8bbc21' ],
+    }
+);
+new Dygraph(
+    document.getElementById("wind_speed-container"),
+    getData('/hc/<%= token %>/wind_speed'),
+    {
+        rollPeriod: 20,
+        showRoller: true,
+        ylabel: 'Wind speed (m/s)',
+        valueRange: [ 0, null ],
+        labels: ['date', 'y'],
+        colors: [ '#4572A7' ],
+    }
+);
+new Dygraph(
+    document.getElementById("wind_direction-container"),
+    getData('/hc/<%= token %>/wind_direction'),
+    {
+        rollPeriod: 20,
+        showRoller: true,
+        ylabel: 'Wind direction (&deg;)',
+        valueRange: [ 0, 360 ],
+        labels: ['date', 'y'],
+        colors: [ '#f28f43' ],
+    }
+);
 </script>
 
 <% include footer %>
