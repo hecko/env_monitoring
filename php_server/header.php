@@ -1,0 +1,82 @@
+<?php
+require('config.php');
+require('db.php');
+?>
+<!DOCTYPE html>
+  <head>
+    <meta charset="utf-8">
+    <title><? echo $title ?></title>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400,700' rel='stylesheet' type='text/css'>
+    <link href='css/style.css' rel='stylesheet' type="text/css">
+    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script src="js/dygraph-combined.js"></script>
+  </head>
+
+<style>
+#menu { position: fixed;
+        top: 0px;
+        left: 0px;
+        width: 100%;
+        height: 21px;
+        padding: 5px;
+        padding-left: 100px;
+        box-shadow: 0px 2px 5px #888888;
+        font-family: 'Open Sans', sans-serif;
+        font-weight: 300;
+        float: left;
+        background: rgba(200,200,200,0.8);
+        z-index: 100;
+      }
+
+
+.menu-title { font-weight: 700;
+              padding-right: 20px;
+}
+
+.menu-option { padding-right: 5px;
+               padding-left:  5px;
+}
+
+.menu-option-div { text-align:    center;
+                   display: inline;
+}
+
+body {
+  overflow-y:scroll;
+  margin: 0;
+  padding: 0;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 300; 
+}
+
+svg {
+  overflow: hidden;
+}
+
+div {
+  border: 0;
+  margin: 0;
+}
+
+#offsetDiv {
+  margin-left: 100px;
+  margin-right: 100px;
+  margin-top: 80px;
+}
+
+#test1 {
+  margin: 0;
+}
+
+#test1 svg {
+  height: 300px;
+  width:  690px;
+  stroke-opacity: 1;
+}
+</style>
+<body>
+
+<div id="menu">
+  <div class="menu-option-div"><span class="menu-title"><? echo $title ?></span></div>
+  <div class="menu-option-div"><span class="menu-option">Dashboard for <? echo $token ?></span></div>
+</div>
