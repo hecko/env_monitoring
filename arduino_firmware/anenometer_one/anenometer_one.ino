@@ -1,9 +1,14 @@
 #include <OneWire.h>
 #include <DallasTemperature.h>
+#include "DHT.h"
 
 #define ONE_WIRE_BUS 3
-#define WV_PIN A1 //wind vane potencioneter sensor
+#define WV_PIN  A1 //wind vane potencioneter sensor
 #define LED_PIN 4
+#define DHTPIN  7  //DHT temp + humidity sensor
+#define DHTTYPE DHT22   // DHT 22  (AM2302)
+
+DHT dht(DHTPIN, DHTTYPE);
 
 OneWire oneWire(ONE_WIRE_BUS);
 DallasTemperature sensors(&oneWire);
@@ -29,6 +34,7 @@ void setup() {
   Serial.begin(9600);
   attachInterrupt(0, an_signal, CHANGE);
   sensors.begin();
+  dht.begin();
   digitalWrite(LED_PIN, HIGH);
   delay(100);
   digitalWrite(LED_PIN, LOW);
@@ -52,6 +58,9 @@ void loop() {
       break;
     case '4':
       wv();
+      break;
+    case '5':
+      dht_temp_humid();
       break;
     default:
       Serial.print("unknown command\n");
@@ -101,3 +110,24 @@ void temp() {
   Serial.print(sensors.getTempCByIndex(0));
   Serial.print("\n");
 }
+
+void dht_temp_humid() {
+  // Reading temperature or humidity takes about 250 milliseconds!
+  // Sensor readings may also be up to 2 seconds 'old' (its a very slow sensor)
+  float h = dht.readHumidity();
+  float t = dht.readTemperature();  
+  // check if returns are valid, if they are NaN (not a number) then something went wrong!
+  if (isnan(t) || isnan(h)) {
+    Serial.println("Failed to read from DHT");
+  } 
+  else {
+    Serial.print(req);
+    Serial.print(":");
+    Serial.print("temp:");
+    Serial.print(t);
+    Serial.print(":humid:");
+    Serial.print(h);
+    Serial.print("\n");
+  } 
+}
+
