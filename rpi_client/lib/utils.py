@@ -5,6 +5,9 @@ import urllib2
 import json
 
 def send_to_cloud(token, what, value):
+    url  = 'http://188.226.135.53:3000/put/'
+    url  = 'http://lists.blava.net/~maco/env_monitoring/php_server/put.php'
+    url  = 'http://knotsup.ibored.com.au/put.php'
     data = { 'token': token,
              'data': [ {
                       'timestamp': int(time.time()),
@@ -13,7 +16,8 @@ def send_to_cloud(token, what, value):
                      } ]
            }
     print data
-    req = urllib2.Request('http://188.226.135.53:3000/put/')
+    print "Sending to " + url
+    req = urllib2.Request(url)
     req.add_header('Content-Type', 'application/json')
     response = urllib2.urlopen(req, json.dumps(data))
 
