@@ -5,7 +5,7 @@ include('header.php');
 div .last_div {
   margin: 0px;
   padding: 5px;
-  width: 190px;
+  width: 200px;
   text-align: center;
   display:inline-block;
 }
@@ -70,7 +70,7 @@ function getAllLast() {
   getLast('<? echo $token ?>','temp','&deg;C',1);
   getLast('<? echo $token ?>','humidity','%',1);
   getLast('<? echo $token ?>','light','%',0);
-  getLast('<? echo $token ?>','wind_speed','m/s',2);
+  getLast('<? echo $token ?>','wind_speed','m/s',1);
   getLast('<? echo $token ?>','wind_direction','&deg;',0);
 };
 getAllLast();
@@ -83,7 +83,6 @@ function getData(query) {
           'url': query,
           'dataType': "json",
           'success': function (data) {
-              data.push([ new Date().getTime(), null ]);
               json = $.map(data, function(n) {
                   return [ [ new Date(n[0]), n[1] ] ];
               });
@@ -98,18 +97,25 @@ new Dygraph(
     document.getElementById("temp-container"),
     getData('get.php?token=<? echo $token ?>&key=temp'),
     {
-        rollPeriod: 20,
+        strokeWidth: 1,
+        drawPoints: false,
+        pointsize: 1,
+        rollPeriod: 1,
         showRoller: true,
         ylabel: 'Temperature (C)',
         labels: ['date', 'y'],
         colors: [ '#910000' ],
+//        dateWindow: [ new Date() - ( 1000 * 60 * 60 * 7 ), new Date() ],
     }
 );
 new Dygraph(
     document.getElementById("humidity-container"),
     getData('get.php?token=<? echo $token ?>&key=humidity'),
     {
-        rollPeriod: 20,
+        strokeWidth: 1,
+        drawPoints: false,
+        pointsize: 1,
+        rollPeriod: 1,
         showRoller: true,
         ylabel: 'Humidity (rel.) (%)',
         valueRange: [ 0, null ],
@@ -121,7 +127,10 @@ new Dygraph(
     document.getElementById("light-container"),
     getData('get.php?token=<? echo $token ?>&key=light'),
     {
-        rollPeriod: 20,
+        strokeWidth: 1,
+        drawPoints: false,
+        pointsize: 1,
+        rollPeriod: 1,
         showRoller: true,
         ylabel: 'Light (%)',
         valueRange: [ 0, 100 ],
@@ -133,7 +142,10 @@ new Dygraph(
     document.getElementById("wind_speed-container"),
     getData('get.php?token=<? echo $token ?>&key=wind_speed'),
     {
-        rollPeriod: 20,
+        strokeWidth: 0.0,
+        drawPoints: true,
+        pointsize: 1,
+        rollPeriod: 1,
         showRoller: true,
         ylabel: 'Wind speed (m/s)',
         valueRange: [ 0, null ],
@@ -145,7 +157,10 @@ new Dygraph(
     document.getElementById("wind_direction-container"),
     getData('get.php?token=<? echo $token ?>&key=wind_direction'),
     {
-        rollPeriod: 20,
+        strokeWidth: 0.0,
+        drawPoints: true,
+        pointsize: 1,
+        rollPeriod: 1,
         showRoller: true,
         ylabel: 'Wind direction (&deg;)',
         valueRange: [ 0, 360 ],

@@ -3,7 +3,7 @@
 div .last_div {
   margin: 0px;
   padding: 5px;
-  width: 190px;
+  width: 200px;
   text-align: center;
   display:inline-block;
 }
@@ -68,7 +68,7 @@ function getAllLast() {
   getLast('<%= token %>','dht_temp','&deg;C',1);
   getLast('<%= token %>','humidity','%',1);
   getLast('<%= token %>','light','%',0);
-  getLast('<%= token %>','wind_speed','m/s',2);
+  getLast('<%= token %>','wind_speed','m/s',1);
   getLast('<%= token %>','wind_direction','&deg;',0);
 };
 getAllLast();
