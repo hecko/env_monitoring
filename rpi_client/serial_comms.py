@@ -4,9 +4,9 @@
 # 0 - anemometer - reset counter
 # 1 - anemometer
 # 2 - light sensor
-# 3 - temp (ds18b20)
 # 4 - wind vane
 # 5 - DHT temp and humidity sensor
+# 6 - BMP180 barometric pressure sensor (+ amb. temp)
 
 import serial
 import time
@@ -38,11 +38,6 @@ freq = float(count) / float(sleep) / 2.0
 mps = float(freq) / 0.777  # 0.777Hz per m/s nominal - from vectorinstruments web site
 utils.send_to_cloud("hacklab", "wind_speed", mps)
 
-ser.write("3")
-out = ser.readline()
-temp = float(re.split(':|\\n', out)[2])
-utils.send_to_cloud("hacklab", "ds_temp", temp)
-
 ser.write("4")
 out = ser.readline()
 wv = re.split(':|\\n', out)[2]
@@ -53,5 +48,11 @@ ser.write("5")
 out   = ser.readline()
 temp  = float(re.split(':|\\n', out)[2])
 humid = float(re.split(':|\\n', out)[4])
-utils.send_to_cloud("hacklab", "dht_temp", temp)
+utils.send_to_cloud("hacklab", "temp", temp)
 utils.send_to_cloud("hacklab", "humidity", humid)
+
+ser.write("6")
+out = ser.readline()
+print out
+pressure = float(re.split(':|\\n', out)[2])
+utils.send_to_cloud("hacklab", "pressure", pressure)
