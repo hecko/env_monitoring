@@ -1,17 +1,16 @@
-#include <OneWire.h>
-#include <DallasTemperature.h>
+van#include <Wire.h>
+#include <Adafruit_Sensor.h>
+#include <Adafruit_BMP085_U.h>
 #include "DHT.h"
 
-#define ONE_WIRE_BUS 3
+Adafruit_BMP085_Unified bmp = Adafruit_BMP085_Unified(10085);
+
 #define WV_PIN  A1 //wind vane potencioneter sensor
 #define LED_PIN 4
 #define DHTPIN  7  //DHT temp + humidity sensor
 #define DHTTYPE DHT22   // DHT 22  (AM2302)
 
 DHT dht(DHTPIN, DHTTYPE);
-
-OneWire oneWire(ONE_WIRE_BUS);
-DallasTemperature sensors(&oneWire);
 
 volatile unsigned int cnt = 0;
 volatile unsigned int last_int = 0;
@@ -33,11 +32,12 @@ void setup() {
   pinMode(WV_PIN, INPUT);
   Serial.begin(9600);
   attachInterrupt(0, an_signal, CHANGE);
-  sensors.begin();
-  dht.begin();
+//  sensors.begin();
+  dht.begin();  // humidity and temperature
   digitalWrite(LED_PIN, HIGH);
-  delay(100);
+  delay(1000);
   digitalWrite(LED_PIN, LOW);
+  bmp.begin(); // barometric pressure and temperature
 }
 
 void loop() {
@@ -54,13 +54,16 @@ void loop() {
       light();
       break;
     case '3':
-      temp();
+//      temp();
       break;
     case '4':
       wv();
       break;
     case '5':
       dht_temp_humid();
+      break;
+    case '6':
+      pressure();
       break;
     default:
       Serial.print("unknown command\n");
@@ -101,15 +104,15 @@ void wv() { //wind_vane
   Serial.print("\n");
 }
 
-void temp() {
-  sensors.requestTemperatures();
-  delay(1000);
-  Serial.print(req);
-  Serial.print(":");
-  Serial.print("temp:");
-  Serial.print(sensors.getTempCByIndex(0));
-  Serial.print("\n");
-}
+//void temp() {
+//  sensors.requestTemperatures();
+//  delay(1000);
+//  Serial.print(req);
+//  Serial.print(":");
+//  Serial.print("temp:");
+//  Serial.print(sensors.getTempCByIndex(0));
+//  Serial.print("\n");
+//}
 
 void dht_temp_humid() {
   // Reading temperature or humidity takes about 250 milliseconds!
@@ -131,3 +134,13 @@ void dht_temp_humid() {
   } 
 }
 
+void pressure() {
+  sensors_event_t event;
+  bmp.getEvent(&event);
+  delay(300);
+  Serial.print(req);
+  Serial.print(":");
+  Serial.print("pressure:");
+  Serial.print(event.pressure);
+  Serial.print("\n");
+}
