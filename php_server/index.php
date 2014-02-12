@@ -130,14 +130,11 @@ new Dygraph(
     getData('get.php?token=<? echo $token ?>&key=temp'),
     {
         strokeWidth: 0.7,
-        drawPoints: false,
-        pointsize: 1,
-        rollPeriod: 1,
+        rollPeriod: 10,
         showRoller: true,
         ylabel: 'Temperature (C)',
         labels: ['date', 'y'],
         colors: [ '#910000' ],
-//        dateWindow: [ new Date() - ( 1000 * 60 * 60 * 7 ), new Date() ],
     }
 );
 new Dygraph(
@@ -177,7 +174,7 @@ new Dygraph(
         strokeWidth: 0.7,
         drawPoints: false,
         pointsize: 1,
-        rollPeriod: 1,
+        rollPeriod: 20,
         showRoller: true,
         ylabel: 'Wind speed (m/s)',
         valueRange: [ 0, null ],

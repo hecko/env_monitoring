@@ -14,7 +14,12 @@ $sql = "SELECT * FROM data WHERE `token`='$token' AND `key`='$key' AND `time` >=
 $result = mysqli_query($con,$sql);
 
 while ( $row = mysqli_fetch_array($result, MYSQL_ASSOC) ) {
-    $dataset[] = array(intval($row['time'] * 1000), $row['val'] );
+    if (is_numeric($row['val'])) {
+        $val = floatval($row['val']);
+    } else {
+        $val = $row['val'];
+    }
+    $dataset[] = array(intval($row['time'] * 1000), $val );
 };
 
 if (isset($last)) {
