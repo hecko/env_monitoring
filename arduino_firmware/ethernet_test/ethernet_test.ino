@@ -1,5 +1,6 @@
 #include <Ethernet.h>
 #include <SPI.h>
+#include <utility/w5100.h>
 
 char token[] = "hacklab";
 char server[] = "knotsup.ibored.com.au";
@@ -18,6 +19,8 @@ void setup() {
   delay(1000);
 
   Ethernet.begin(mac, ip, myDns);
+  W5100.setRetransmissionTime(0x1388);
+  W5100.setRetransmissionCount(3);
 
   Serial.print("My IP address: ");
   Serial.println(Ethernet.localIP());
