@@ -5,13 +5,13 @@ include('header.php');
 div .last_div {
   margin: 0px;
   padding: 5px;
-  width: 200px;
+  width: 160px;
   text-align: center;
   display:inline-block;
 }
 .last_value {
   color: white;
-  font-size: 35pt;
+  font-size: 30pt;
 }
 </style>
 <div id="offsetDiv">
@@ -20,14 +20,14 @@ div .last_div {
       <span style="color: white; font-size: 10pt">Temp:<br></span>
       <span id="last_temp" class="last_value">loading last value...</span><br>
       <span id="last_temp_time" style="color: white; font-size: 10pt"></span>
-    </div><div class="last_div" style="background: #77a1e5">
+    </div><div class="last_div" style="background: #2F9DAD">
       <span style="color: white; font-size: 10pt">Rel. humidity:<br></span>
       <span id="last_humidity" class="last_value">loading last value...</span><br>
       <span id="last_humidity_time" style="color: white; font-size: 10pt"></span>
     </div><div class="last_div" style="background: #8bbc21">
-      <span style="color: white; font-size: 10pt">Light:<br></span>
-      <span id="last_light" class="last_value">loading last value...</span><br>
-      <span id="last_light_time" style="color: white; font-size: 10pt"></span>
+      <span style="color: white; font-size: 10pt">Pressure:<br></span>
+      <span id="last_pressure" class="last_value">loading last value...</span><br>
+      <span id="last_pressure_time" style="color: white; font-size: 10pt"></span>
     </div><div class="last_div" style="background: #4572A7">
       <span style="color: white; font-size: 10pt">Wind speed:<br></span>
       <span id="last_wind_speed" class="last_value">loading last value...</span><br>
@@ -36,6 +36,10 @@ div .last_div {
       <span style="color: white; font-size: 10pt">Wind direction:<br></span>
       <span id="last_wind_direction" class="last_value">loading last value...</span><br>
       <span id="last_wind_direction_time" style="color: white; font-size: 10pt"></span>
+    </div><div class="last_div" style="background: #F035AE">
+      <span style="color: white; font-size: 10pt">Light:<br></span>
+      <span id="last_light" class="last_value">loading last value...</span><br>
+      <span id="last_light_time" style="color: white; font-size: 10pt"></span>
     </div>
   </div>
   <div id="temp-container" style="clear: both; min-width: 600px; height: 150px; margin: 0 auto"></div>
@@ -43,6 +47,7 @@ div .last_div {
   <div id="light-container" style="min-width: 600px; height: 150px; margin: 0 auto"></div>
   <div id="wind_speed-container" style="min-width: 600px; height: 150px; margin: 0 auto"></div>
   <div id="wind_direction-container" style="min-width: 600px; height: 150px; margin: 0 auto"></div>
+  <div id="pressure-container" style="min-width: 600px; height: 150px; margin: 0 auto"></div>
 </div>
 
 <script>
@@ -72,6 +77,7 @@ function getAllLast() {
   getLast('<? echo $token ?>','light','%',0);
   getLast('<? echo $token ?>','wind_speed','m/s',1);
   getLast('<? echo $token ?>','wind_direction','&deg;',0);
+  getLast('<? echo $token ?>','pressure','hPa',0);
 };
 getAllLast();
 
@@ -97,8 +103,8 @@ new Dygraph(
     document.getElementById("temp-container"),
     getData('get.php?token=<? echo $token ?>&key=temp'),
     {
-        strokeWidth: 1,
-        drawPoints: false,
+        strokeWidth: 0.7,
+        drawPoints: true,
         pointsize: 1,
         rollPeriod: 1,
         showRoller: true,
@@ -112,8 +118,8 @@ new Dygraph(
     document.getElementById("humidity-container"),
     getData('get.php?token=<? echo $token ?>&key=humidity'),
     {
-        strokeWidth: 1,
-        drawPoints: false,
+        strokeWidth: 0.7,
+        drawPoints: true,
         pointsize: 1,
         rollPeriod: 1,
         showRoller: true,
@@ -127,8 +133,8 @@ new Dygraph(
     document.getElementById("light-container"),
     getData('get.php?token=<? echo $token ?>&key=light'),
     {
-        strokeWidth: 1,
-        drawPoints: false,
+        strokeWidth: 0.7,
+        drawPoints: true,
         pointsize: 1,
         rollPeriod: 1,
         showRoller: true,
@@ -142,7 +148,7 @@ new Dygraph(
     document.getElementById("wind_speed-container"),
     getData('get.php?token=<? echo $token ?>&key=wind_speed'),
     {
-        strokeWidth: 0.0,
+        strokeWidth: 0.7,
         drawPoints: true,
         pointsize: 1,
         rollPeriod: 1,
@@ -157,7 +163,7 @@ new Dygraph(
     document.getElementById("wind_direction-container"),
     getData('get.php?token=<? echo $token ?>&key=wind_direction'),
     {
-        strokeWidth: 0.0,
+        strokeWidth: 0.7,
         drawPoints: true,
         pointsize: 1,
         rollPeriod: 1,
@@ -166,6 +172,20 @@ new Dygraph(
         valueRange: [ 0, 360 ],
         labels: ['date', 'y'],
         colors: [ '#f28f43' ],
+    }
+);
+new Dygraph(
+    document.getElementById("pressure-container"),
+    getData('get.php?token=<? echo $token ?>&key=pressure'),
+    {
+        strokeWidth: 0.7,
+        drawPoints: true,
+        pointsize: 1,
+        rollPeriod: 1,
+        showRoller: true,
+        ylabel: 'Pressure (hPa)',
+        labels: ['date', 'y'],
+        colors: [ '#4572A7' ],
     }
 );
 </script>
