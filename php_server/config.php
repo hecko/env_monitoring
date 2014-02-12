@@ -6,4 +6,6 @@ $db_pass      = 'testing123';
 $db_db        = 'iboredco_weather';
 $title        = 'iBored Weather';
 $token        = 'hacklab'; // default token
+
+$has_gps      = 1; // 0 - NO, 1 - YES
 ?>

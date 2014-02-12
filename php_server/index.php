@@ -16,6 +16,10 @@ div .last_div {
 </style>
 <div id="offsetDiv">
   <div style="text-align:center;">
+    <? if ($has_gps) { ?>
+      <div>Location: <a id="last_location_link" href="#"><span id="last_location">loading location data...</span></a> <span id="last_location_time"></span></div>
+    <? }; ?>
+    <hr>
     <div class="last_div" style="background: #910000">
       <span style="color: white; font-size: 10pt">Temp:<br></span>
       <span id="last_temp" class="last_value">loading last value...</span><br>
@@ -64,8 +68,29 @@ function getLast(token, key, unit, dec) {
           'url': 'get.php?last=1&token=' + token + '&key=' + key,
           'dataType': "json",
           'success': function (data) {
-              $('#last_' + key).html(Number(data[1]).toFixed(dec) + unit);
+              if (isNaN(data[1])) {
+                  $('#last_' + key).html(data[1]);
+              } else {
+                  $('#last_' + key).html(Number(data[1]).toFixed(dec) + unit);
+              }
               $('#last_' + key + '_time').html(((new Date() - new Date(data[0]))/1000/60).toFixed(0) + " min ago");
+          }
+    });
+  })();
+}
+
+function getLastLocation(token) {
+  var json = (function () {
+    var json = null;
+    $.ajax({
+          'async': false,
+          'global': false,
+          'url': 'get.php?last=1&token=' + token + '&key=location',
+          'dataType': "json",
+          'success': function (data) {
+              $('#last_location').html(data[1]);
+              $('#last_location_time').html(((new Date() - new Date(data[0]))/1000/60).toFixed(0) + " min ago");
+              $('#last_location_link').attr('href', function(i,a) { return 'location.php?location=' + data[1]; });
           }
     });
   })();
@@ -78,6 +103,7 @@ function getAllLast() {
   getLast('<? echo $token ?>','wind_speed','m/s',1);
   getLast('<? echo $token ?>','wind_direction','&deg;',0);
   getLast('<? echo $token ?>','pressure','hPa',0);
+  getLastLocation('<? echo $token ?>');
 };
 getAllLast();
 
@@ -104,7 +130,7 @@ new Dygraph(
     getData('get.php?token=<? echo $token ?>&key=temp'),
     {
         strokeWidth: 0.7,
-        drawPoints: true,
+        drawPoints: false,
         pointsize: 1,
         rollPeriod: 1,
         showRoller: true,
@@ -119,14 +145,14 @@ new Dygraph(
     getData('get.php?token=<? echo $token ?>&key=humidity'),
     {
         strokeWidth: 0.7,
-        drawPoints: true,
+        drawPoints: false,
         pointsize: 1,
         rollPeriod: 1,
         showRoller: true,
         ylabel: 'Humidity (rel.) (%)',
         valueRange: [ 0, null ],
         labels: ['date', 'y'],
-        colors: [ '#77a1e5' ],
+        colors: [ '#2F9DAD' ],
     }
 );
 new Dygraph(
@@ -134,14 +160,14 @@ new Dygraph(
     getData('get.php?token=<? echo $token ?>&key=light'),
     {
         strokeWidth: 0.7,
-        drawPoints: true,
+        drawPoints: false,
         pointsize: 1,
         rollPeriod: 1,
         showRoller: true,
         ylabel: 'Light (%)',
         valueRange: [ 0, 100 ],
         labels: ['date', 'y'],
-        colors: [ '#8bbc21' ],
+        colors: [ '#F035AE' ],
     }
 );
 new Dygraph(
@@ -149,7 +175,7 @@ new Dygraph(
     getData('get.php?token=<? echo $token ?>&key=wind_speed'),
     {
         strokeWidth: 0.7,
-        drawPoints: true,
+        drawPoints: false,
         pointsize: 1,
         rollPeriod: 1,
         showRoller: true,
@@ -164,7 +190,7 @@ new Dygraph(
     getData('get.php?token=<? echo $token ?>&key=wind_direction'),
     {
         strokeWidth: 0.7,
-        drawPoints: true,
+        drawPoints: false,
         pointsize: 1,
         rollPeriod: 1,
         showRoller: true,
@@ -179,13 +205,13 @@ new Dygraph(
     getData('get.php?token=<? echo $token ?>&key=pressure'),
     {
         strokeWidth: 0.7,
-        drawPoints: true,
+        drawPoints: false,
         pointsize: 1,
         rollPeriod: 1,
         showRoller: true,
         ylabel: 'Pressure (hPa)',
         labels: ['date', 'y'],
-        colors: [ '#4572A7' ],
+        colors: [ '#8bbc21' ],
     }
 );
 </script>
