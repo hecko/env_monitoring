@@ -5,8 +5,9 @@
 char token[] = "hacklab";
 char server[] = "knotsup.ibored.com.au";
 
-IPAddress ip(10,38,38,38);
-IPAddress myDns(10,38,38,1);
+IPAddress ip(10,0,0,38);
+IPAddress myDns(10,0,0,138);
+IPAddress myGW(10,0,0,138);
 
 byte mac[] = {
   0xDA, 0xAD, 0xBE, 0xEF, 0xFE, 0xED};
@@ -18,7 +19,7 @@ void setup() {
   // give the ethernet module time to boot up:
   delay(1000);
 
-  Ethernet.begin(mac, ip, myDns);
+  Ethernet.begin(mac, ip, myDns, myGW);
   W5100.setRetransmissionTime(0x1388);
   W5100.setRetransmissionCount(3);
 
