@@ -78,5 +78,4 @@ div {
 
 <div id="menu">
   <div class="menu-option-div"><span class="menu-title"><? echo $title ?></span></div>
-  <div class="menu-option-div"><span class="menu-option">Dashboard for <? echo $token ?></span></div>
 </div>

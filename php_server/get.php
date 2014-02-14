@@ -8,7 +8,7 @@ if (isset($_GET['last'])) {
 }
 $token = $_GET['token'];
 $key   = $_GET['key'];
-$since = time() - (3600*24*1); //last X days
+$since = time() - (3600*24*3); //last X days
 
 $sql = "SELECT * FROM data WHERE `token`='$token' AND `key`='$key' AND `time` >= $since ORDER BY `id` ASC";
 $result = mysqli_query($con,$sql);

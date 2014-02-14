@@ -15,11 +15,10 @@ div .last_div {
 }
 </style>
 <div id="offsetDiv">
-  <div style="text-align:center;">
+  <div style="text-align:center; margin-bottom: 50px;">
     <? if ($has_gps) { ?>
-      <div>Location: <a id="last_location_link" href="#"><span id="last_location">loading location data...</span></a> <span id="last_location_time"></span></div>
+      <div style="margin-bottom: 40px">Last location: <a id="last_location_link" href="#"><span id="last_location">loading location data...</span></a> <span id="last_location_time"></span></div>
     <? }; ?>
-    <hr>
     <div class="last_div" style="background: #910000">
       <span style="color: white; font-size: 10pt">Temp:<br></span>
       <span id="last_temp" class="last_value">loading last value...</span><br>
@@ -47,11 +46,10 @@ div .last_div {
     </div>
   </div>
   <div id="temp-container" style="clear: both; min-width: 600px; height: 150px; margin: 0 auto"></div>
-  <div id="humidity-container" style="min-width: 600px; height: 150px; margin: 0 auto"></div>
-  <div id="light-container" style="min-width: 600px; height: 150px; margin: 0 auto"></div>
+  <div id="pressure-container" style="min-width: 600px; height: 150px; margin: 0 auto"></div>
   <div id="wind_speed-container" style="min-width: 600px; height: 150px; margin: 0 auto"></div>
   <div id="wind_direction-container" style="min-width: 600px; height: 150px; margin: 0 auto"></div>
-  <div id="pressure-container" style="min-width: 600px; height: 150px; margin: 0 auto"></div>
+  <div id="light-container" style="min-width: 600px; height: 150px; margin: 0 auto"></div>
 </div>
 
 <script>
@@ -122,34 +120,53 @@ function getData(query) {
   });
   return json;
 };
+
+function getTHData(query) {
+  var json = [];
+  $.ajax({
+          'async': false,
+          'global': false,
+          'url': query,
+          'dataType': "json",
+          'success': function (data) {
+              json = $.map(data, function(n) {
+                  return [ [ new Date(n[0]), n[1], n[2] ] ];
+              });
+          }
+  });
+  return json;
+};
 </script>
 
 <script type="text/javascript">
 new Dygraph(
     document.getElementById("temp-container"),
-    getData('get.php?token=<? echo $token ?>&key=temp'),
+    getTHData('get_thp.php?token=<? echo $token ?>'),
     {
         strokeWidth: 0.7,
         rollPeriod: 10,
         showRoller: true,
-        ylabel: 'Temperature (C)',
-        labels: ['date', 'y'],
-        colors: [ '#910000' ],
+        ylabel: 'Temp. (&deg;C)',
+        y2label: 'Humidity (%)',
+        labels: ['date', 'temp', 'humidity' ],
+        colors: [ '#910000', '#2F9DAD' ],
+        humidity: {
+            axis: { },
+        },
     }
 );
 new Dygraph(
-    document.getElementById("humidity-container"),
-    getData('get.php?token=<? echo $token ?>&key=humidity'),
+    document.getElementById("pressure-container"),
+    getData('get.php?token=<? echo $token ?>&key=pressure'),
     {
         strokeWidth: 0.7,
         drawPoints: false,
         pointsize: 1,
         rollPeriod: 1,
         showRoller: true,
-        ylabel: 'Humidity (rel.) (%)',
-        valueRange: [ 0, null ],
+        ylabel: 'Pressure (hPa)',
         labels: ['date', 'y'],
-        colors: [ '#2F9DAD' ],
+        colors: [ '#8bbc21' ],
     }
 );
 new Dygraph(
@@ -174,7 +191,7 @@ new Dygraph(
         strokeWidth: 0.7,
         drawPoints: false,
         pointsize: 1,
-        rollPeriod: 20,
+        rollPeriod: 40,
         showRoller: true,
         ylabel: 'Wind speed (m/s)',
         valueRange: [ 0, null ],
@@ -195,20 +212,6 @@ new Dygraph(
         valueRange: [ 0, 360 ],
         labels: ['date', 'y'],
         colors: [ '#f28f43' ],
-    }
-);
-new Dygraph(
-    document.getElementById("pressure-container"),
-    getData('get.php?token=<? echo $token ?>&key=pressure'),
-    {
-        strokeWidth: 0.7,
-        drawPoints: false,
-        pointsize: 1,
-        rollPeriod: 1,
-        showRoller: true,
-        ylabel: 'Pressure (hPa)',
-        labels: ['date', 'y'],
-        colors: [ '#8bbc21' ],
     }
 );
 </script>
