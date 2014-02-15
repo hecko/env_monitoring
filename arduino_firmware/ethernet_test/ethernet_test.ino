@@ -2,12 +2,24 @@
 #include <SPI.h>
 #include <utility/w5100.h>
 
+#include "DHT.h"  // temp ad humidity sensor
+
+#define DHTTYPE DHT22   // DHT22  (AM2302)
+#define DHTPIN  7       // DHT22 signal pin
+
+DHT dht(DHTPIN, DHTTYPE);
+
+
 char token[] = "hacklab";
 char server[] = "knotsup.ibored.com.au";
 
-IPAddress ip(10,0,0,38);
-IPAddress myDns(10,0,0,138);
-IPAddress myGW(10,0,0,138);
+// IPAddress ip(10,0,0,38);
+// IPAddress myDns(10,0,0,138);
+// IPAddress myGW(10,0,0,138);
+
+IPAddress ip(10,38,38,38);
+IPAddress myDns(10,38,38,1);
+IPAddress myGW(10,38,38,1);
 
 byte mac[] = {
   0xDA, 0xAD, 0xBE, 0xEF, 0xFE, 0xED};
@@ -17,12 +29,14 @@ EthernetClient client;
 void setup() {
   Serial.begin(9600);
   // give the ethernet module time to boot up:
-  delay(1000);
 
   Ethernet.begin(mac, ip, myDns, myGW);
   W5100.setRetransmissionTime(0x1388);
   W5100.setRetransmissionCount(3);
+  
+  dht.begin();  // humidity and temperature
 
+  delay(1000);
   Serial.print("My IP address: ");
   Serial.println(Ethernet.localIP());
 }
@@ -32,16 +46,20 @@ void loop() {
     char c = client.read();
     Serial.print(c);
   }
-  httpRequest();
+  float humidity = dht.readHumidity();
+  float temp = dht.readTemperature();
+  send_data('humidity',humidity);
+  send_data('temp'    ,temp);
 }
 
-void httpRequest() {
-  float val = 100.0 / 1024.0 * random(0,1024);
+void send_data(char key, float val) {
   if (client.connect(server, 80)) {
     //    float val = 100.0 / 1024.0 * analogRead(TEST_PIN);
     Serial.print(val);
     Serial.println(" <- sending...");
-    client.print("GET /put_get.php?key=light&val=");
+    client.print("GET /put_get.php?key=");
+    client.print(key);
+    client.print("&val=");
     client.print(val);
     client.print("&token=");
     client.print(token);
