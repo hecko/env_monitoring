@@ -33,7 +33,7 @@ void setup() {
   Ethernet.begin(mac, ip, myDns, myGW);
   W5100.setRetransmissionTime(0x1388);
   W5100.setRetransmissionCount(3);
-  
+
   dht.begin();  // humidity and temperature
 
   delay(1000);
@@ -46,10 +46,15 @@ void loop() {
     char c = client.read();
     Serial.print(c);
   }
-  float humidity = dht.readHumidity();
-  float temp = dht.readTemperature();
-  send_data('humidity',humidity);
-  send_data('temp'    ,temp);
+  float h = dht.readHumidity();
+  float t = dht.readTemperature();
+  if (isnan(t) || isnan(h)) {
+    Serial.println("Failed to read from DHT");
+  } 
+  else {
+    send_data('humidity',h);
+    send_data('temp'    ,t);
+  }
 }
 
 void send_data(char key, float val) {
@@ -74,6 +79,7 @@ void send_data(char key, float val) {
     client.stop();
   }
 }
+
 
 
 
