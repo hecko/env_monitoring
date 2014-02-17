@@ -1,6 +1,7 @@
 <?php
 include('header.php');
 ?>
+<meta http-equiv="refresh" content="600">
 <style>
 div .last_div {
   margin: 0px;
