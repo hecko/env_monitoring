@@ -17,8 +17,9 @@ div .last_div {
 <div id="offsetDiv">
   <div style="text-align:center; margin-bottom: 50px;">
     <? if ($has_gps) { ?>
-      <div style="margin-bottom: 40px">Last location: <a id="last_location_link" href="#"><span id="last_location">loading location data...</span></a> <span id="last_location_time"></span></div>
+    <div style="margin-bottom: 40px">Last location: <a id="last_location_link" href="#"><span id="last_location">loading location data...</span></a> <span id="last_location_time"></span></div>
     <? }; ?>
+    <div style="margin-bottom: 40px">Last beat: <span id="last_beat"></span><span id="last_location_time"></span></div>
     <div class="last_div" style="background: #910000">
       <span style="color: white; font-size: 10pt">Temp:<br></span>
       <span id="last_temp" class="last_value">loading last value...</span><br>
@@ -94,6 +95,22 @@ function getLastLocation(token) {
   })();
 }
 
+function getLastBeat(token) {
+  var json = (function () {
+    var json = null;
+    $.ajax({
+          'async': false,
+          'global': false,
+          'url': 'get.php?last=1&token=' + token + '&key=beat',
+          'dataType': "json",
+          'success': function (data) {
+              $('#last_beat').html(data[1]);
+              $('#last_beat_time').html(((new Date() - new Date(data[0]))/1000/60).toFixed(0) + " min ago");
+          }
+    });
+  })();
+}
+
 function getAllLast() {
   getLast('<? echo $token ?>','temp','&deg;C',1);
   getLast('<? echo $token ?>','humidity','%',1);
@@ -102,6 +119,7 @@ function getAllLast() {
   getLast('<? echo $token ?>','wind_direction','&deg;',0);
   getLast('<? echo $token ?>','pressure','hPa',0);
   getLastLocation('<? echo $token ?>');
+  getLastBeat('<? echo $token ?>');
 };
 getAllLast();
 
