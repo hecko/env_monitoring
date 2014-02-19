@@ -12,13 +12,9 @@ DHT dht(DHTPIN, DHTTYPE);
 char token[] = "hacklab";
 char server[] = "knotsup.ibored.com.au";
 
-//IPAddress ip(10,0,0,38);
-//IPAddress myDns(10,0,0,138);
-//IPAddress myGW(10,0,0,138);
-
-IPAddress ip(10,38,38,38);
-IPAddress myDns(10,38,38,1);
-IPAddress myGW(10,38,38,1);
+IPAddress ip(10,0,0,38);
+IPAddress myDns(10,0,0,138);
+IPAddress myGW(10,0,0,138);
 
 byte mac[] = {
   0xDA, 0xAD, 0xBE, 0xEF, 0xFE, 0xED};
@@ -63,8 +59,8 @@ void loop() {
   else {
     char t_char[10];
     char h_char[10];
-    sprintf(t_char,"%f",t);
-    sprintf(h_char,"%f",h);
+    dtostrf(t, 4, 2, t_char);
+    dtostrf(h, 3, 2, h_char);
     send_data("temp"    ,t_char);
     send_data("humidity",h_char);
   }
@@ -78,11 +74,11 @@ void send_data(char key[], char val[]) {
   Serial.print("Trying to connect to server ");
   Serial.println(server);
   if (client.connect(server, 80)) {
-    Serial.print("Sending key: ");
+    Serial.print("Sending key: =");
     Serial.print(key);
-    Serial.print(" value: ");
+    Serial.print("= value: =");
     Serial.print(val);
-    Serial.print(" to server ");
+    Serial.print("= to server ");
     Serial.println(server);
     client.print("GET /put_get.php?key=");
     client.print(key);
@@ -100,6 +96,7 @@ void send_data(char key[], char val[]) {
     Serial.println(server);
     client.stop(); 
   }
+  client.stop();
 }
 
 
