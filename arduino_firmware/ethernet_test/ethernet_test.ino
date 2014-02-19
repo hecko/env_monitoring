@@ -69,7 +69,7 @@ void loop() {
     send_data("humidity",h_char);
   }
   
-  send_data("beat", "1"); // test beat
+  send_data("beat", "1.0"); // test beat
 
     Serial.println("------------");
 }
