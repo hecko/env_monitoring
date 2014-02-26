@@ -1,0 +1,3 @@
+[rpi]
+server_put = http://lists.blava.net/~maco/env_monitoring/php_server/put.php
+token = hacklab
