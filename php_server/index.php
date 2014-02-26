@@ -1,5 +1,7 @@
 <?php
-$token = $_GET['token'];
+if (isset($_GET['token'])) {
+  $token = $_GET['token'];
+}
 
 include('header.php');
 ?>
