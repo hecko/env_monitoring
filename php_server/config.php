@@ -4,7 +4,9 @@ $app_location = 'Edinburgh';
 $db_user      = 'iboredco_mac';
 $db_pass      = 'testing123';
 $db_db        = 'iboredco_weather';
-$token        = 'hacklab'; // default token
+if (!isset($token)) {
+  $token        = 'hacklab'; // default token
+};
 $title        = $token."'s environmental information";
 
 $has_gps      = 1; // 0 - NO, 1 - YES

@@ -1,10 +1,7 @@
 <?php
+$token = $_GET['token'];
+
 include('header.php');
-
-if (isset($_GET['token'])) {
-  $token = $_GET['token'];
-}
-
 ?>
 <meta http-equiv="refresh" content="600">
 <style>
