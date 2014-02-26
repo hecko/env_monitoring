@@ -30,4 +30,4 @@ def read_temperature(onewire):
 onewire = '28-0000019d3e23' # marcel
 #onewire = '28-000001e3f96c' # hacklab
 current_temp = read_temperature(onewire)
-utils.send_to_cloud("hacklab", "temp", current_temp)
+utils.send_to_cloud("temp", current_temp)

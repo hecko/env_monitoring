@@ -23,7 +23,7 @@ while True:
                 if hasattr(report, 'epx'):
                     error = (report.epx + report.epy) / 2.0
                 location = str(report.lat) + ',' + str(report.lon) + ',' + str(error)
-                utils.send_to_cloud("hacklab", "location", location)
+                utils.send_to_cloud("location", location)
                 time.sleep(60) # sleep 60 seconds after reporting location
     except KeyError:
         pass

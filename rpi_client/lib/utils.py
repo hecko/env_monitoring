@@ -3,11 +3,15 @@
 import time
 import urllib2
 import json
+import ConfigParser
+import io
 
-def send_to_cloud(token, what, value):
-    url  = 'http://188.226.135.53:3000/put/'
-    url  = 'http://lists.blava.net/~maco/env_monitoring/php_server/put.php'
-#    url  = 'http://knotsup.ibored.com.au/put.php'
+
+def send_to_cloud(what, value):
+    config = ConfigParser.ConfigParser()
+    config.read('config.txt')
+    url   = config.get("rpi", "server_put"); 
+    token = config.get("rpi", "token"); 
     data = { 'token': token,
              'data': [ {
                       'timestamp': int(time.time()),

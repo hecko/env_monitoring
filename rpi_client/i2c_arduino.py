@@ -26,4 +26,4 @@ time.sleep(sleep)
 count = readData()
 
 freq = float(count) / float(sleep) / 2.0
-utils.send_to_cloud("hacklab", "wind_freq", freq)
+utils.send_to_cloud("wind_freq", freq)

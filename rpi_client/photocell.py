@@ -27,4 +27,4 @@ def RCtime (RCpin):
 
 val = RCtime(18) # Read RC timing using pin #18
 
-utils.send_to_cloud("hacklab", "light", val)
+utils.send_to_cloud("light", val)
