@@ -41,7 +41,6 @@ utils.send_to_cloud("wind_speed", mps)
 ser.write("4")
 out = ser.readline()
 wv = re.split(':|\\n', out)[2]
-wv = int(wv)%360
 utils.send_to_cloud("wind_direction", wv)
 
 ser.write("5")
