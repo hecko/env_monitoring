@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-if (!status()) {
+if (status() == 0) {
   print "We are NOT connected - try to connect now!";
   my $connect = `/opt/env_monitoring/external/sakis3g-source/build/sakis3gz connect APN="payandgo.o2.co.uk"`;
   print $connect;
@@ -11,9 +11,12 @@ if (!status()) {
 sub status {
   my $status  = `/opt/env_monitoring/external/sakis3g-source/build/sakis3gz status`;
   my $status_code = $? >> 8;
+  print "Status code: " . $status_code . "\n";
   if ($status_code != 0) {
-    return false;
+    print "Not connected!";
+    return 0;
   } else {
-    return true;
+    print "Yes, connected!";
+    return 1;
   }
 }
