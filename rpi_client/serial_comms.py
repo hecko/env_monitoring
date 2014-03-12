@@ -28,8 +28,9 @@ parser.add_argument('-v', '--verbose', action="store_true", help='Print out more
 args = parser.parse_args()
 
 
-serial_dev = '/dev/ttyACM0'
+#serial_dev = '/dev/ttyACM0'
 #serial_dev = '/dev/tty.usbserial-A9007KLg'
+serial_dev = '/dev/ttyAMA0'
 
 ser = serial.Serial(serial_dev, 9600)
 
@@ -40,6 +41,8 @@ time.sleep(3)
 ser.write("2")
 out = ser.readline()
 light = 100.0 / 1023.0 * float(re.split(':|\\n', out)[2])
+if (args.verbose):
+    print light
 if (args.send):
     utils.send_to_cloud("light", light)
 
