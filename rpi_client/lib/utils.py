@@ -10,8 +10,8 @@ import io
 def send_to_cloud(what, value):
     config = ConfigParser.ConfigParser()
     config.read('config.txt')
-    url   = config.get("rpi", "server_put"); 
-    token = config.get("rpi", "token"); 
+    url   = config.get("rpi", "server_put")
+    token = config.get("rpi", "token")
     data = { 'token': token,
              'data': [ {
                       'timestamp': int(time.time()),
@@ -24,6 +24,8 @@ def send_to_cloud(what, value):
     req = urllib2.Request(url)
     req.add_header('Content-Type', 'application/json')
     response = urllib2.urlopen(req, json.dumps(data))
+    print response.info()
+    print response.getcode()
 
 def cpu_serial():
     file = '/proc/cpuinfo'
