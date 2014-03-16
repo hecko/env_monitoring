@@ -6,8 +6,17 @@ import json
 import ConfigParser
 import io
 
+global args
+
+def info(toprint):
+    global args
+    if (args.verbose):
+        print toprint
 
 def send_to_cloud(what, value):
+    if (not args.send):
+        info("Not sending flag set!")
+        return
     config = ConfigParser.ConfigParser()
     config.read('config.txt')
     url   = config.get("rpi", "server_put")
@@ -19,13 +28,13 @@ def send_to_cloud(what, value):
                       'val':       value,
                      } ]
            }
-    print data
-    print "Sending to " + url
+    info(data)
+    info("Sending to " + url)
     req = urllib2.Request(url)
     req.add_header('Content-Type', 'application/json')
     response = urllib2.urlopen(req, json.dumps(data))
-    print response.info()
-    print response.getcode()
+    info(response.info())
+    info(response.getcode())
 
 def cpu_serial():
     file = '/proc/cpuinfo'

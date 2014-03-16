@@ -19,8 +19,7 @@ parser = argparse.ArgumentParser(description='Gets humidity and temperature data
 parser.add_argument('-s', '--send',    action="store_true", help='Send to server, otherwise just test reading the sensors.')
 parser.add_argument('-v', '--verbose', action="store_true", help='Print out more info.')
 
-args = parser.parse_args()
-
+utils.args = parser.parse_args()
 
 def read_sensor(pin):
     out = {}
@@ -39,9 +38,7 @@ def read_sensor(pin):
 
 now = read_sensor(4) # pin to which the sensor is connected to
 
-if args.verbose:
-    print now
+utils.info(now)
 
-if args.send:
-    utils.send_to_cloud("temp", now['temp'])
-    utils.send_to_cloud("humidity", now['humi'])
+utils.send_to_cloud("temp", now['temp'])
+utils.send_to_cloud("humidity", now['humi'])

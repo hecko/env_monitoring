@@ -25,8 +25,7 @@ parser = argparse.ArgumentParser(description='Requests data from Arduino via ser
 parser.add_argument('-s', '--send',    action="store_true", help='Send to server, otherwise just test reading the sensors.')
 parser.add_argument('-v', '--verbose', action="store_true", help='Print out more info.')
 
-args = parser.parse_args()
-
+utils.args = parser.parse_args()
 
 #serial_dev = '/dev/ttyACM0'
 #serial_dev = '/dev/tty.usbserial-A9007KLg'
@@ -34,17 +33,14 @@ serial_dev = '/dev/ttyAMA0'
 
 ser = serial.Serial(serial_dev, 9600)
 
-if (args.verbose):
-    print serial_dev + " initialized. Getting data..."
+utils.info(serial_dev + " initialized. Getting data...")
 time.sleep(3)
 
 ser.write("2")
 out = ser.readline()
 light = 100.0 / 1023.0 * float(re.split(':|\\n', out)[2])
-if (args.verbose):
-    print light
-if (args.send):
-    utils.send_to_cloud("light", light)
+utils.info(light)
+utils.send_to_cloud("light", light)
 
 sleep = 12
 ser.write("0")
@@ -54,28 +50,23 @@ out = ser.readline()
 count = re.split(':|\\n', out)[2]
 freq = float(count) / float(sleep) / 2.0
 mps = float(freq) / 0.777  # 0.777Hz per m/s nominal - from vectorinstruments web site
-if (args.send):
-    utils.send_to_cloud("wind_speed", mps)
+utils.send_to_cloud("wind_speed", mps)
 
 ser.write("4")
 out = ser.readline()
 wv = re.split(':|\\n', out)[2]
-if (args.send):
-    utils.send_to_cloud("wind_direction", wv)
+utils.send_to_cloud("wind_direction", wv)
 
 ser.write("5")
 out   = ser.readline()
 temp  = float(re.split(':|\\n', out)[2])
 humid = float(re.split(':|\\n', out)[4])
-if (args.send):
-    utils.send_to_cloud("temp", temp)
-    utils.send_to_cloud("humidity", humid)
+utils.send_to_cloud("temp", temp)
+utils.send_to_cloud("humidity", humid)
 
 ser.write("6")
 out = ser.readline()
 pressure = float(re.split(':|\\n', out)[2])
-if (args.send):
-    utils.send_to_cloud("pressure", pressure)
+utils.send_to_cloud("pressure", pressure)
 
-if (args.verbose):
-    print "Done."
+utils.info("Done.")

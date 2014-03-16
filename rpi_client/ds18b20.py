@@ -21,7 +21,7 @@ parser = argparse.ArgumentParser(description='Gets temperature data from DS18B20
 parser.add_argument('-s', '--send',    action="store_true", help='Send to server, otherwise just test reading the sensors.')
 parser.add_argument('-v', '--verbose', action="store_true", help='Print out more info.')
 
-args = parser.parse_args()
+utils.args = parser.parse_args()
 
 def read_temperature(onewire):
     file  = '/sys/bus/w1/devices/' + onewire + '/w1_slave'
@@ -43,5 +43,4 @@ def read_temperature(onewire):
 onewire = '28-0000019d3e23' # marcel
 #onewire = '28-000001e3f96c' # hacklab
 current_temp = read_temperature(onewire)
-if (args.send):
-    utils.send_to_cloud("temp", current_temp)
+utils.send_to_cloud("temp", current_temp)
