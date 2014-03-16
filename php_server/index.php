@@ -52,6 +52,7 @@ div .last_div {
     </div>
   </div>
   <div id="temp-container" style="clear: both; min-width: 600px; height: 150px; margin: 0 auto"></div>
+  <div id="humidity-container" style="clear: both; min-width: 600px; height: 150px; margin: 0 auto"></div>
   <div id="pressure-container" style="min-width: 600px; height: 150px; margin: 0 auto"></div>
   <div id="wind_speed-container" style="min-width: 600px; height: 150px; margin: 0 auto"></div>
   <div id="wind_direction-container" style="min-width: 600px; height: 150px; margin: 0 auto"></div>
@@ -162,22 +163,54 @@ function getTHData(query) {
 </script>
 
 <script type="text/javascript">
+
+//new Dygraph(
+//    document.getElementById("temp-container"),
+//    getTHData('get_thp.php?token=<? echo $token ?>'),
+//    {
+//        strokeWidth: 0.7,
+//        rollPeriod: 10,
+//        showRoller: true,
+//        ylabel: 'Temp. (&deg;C)',
+//        y2label: 'Humidity (%)',
+//        labels: ['date', 'temp', 'humidity' ],
+//        colors: [ '#910000', '#2F9DAD' ],
+//        humidity: {
+//            axis: { },
+//        },
+//    }
+//);
+
 new Dygraph(
     document.getElementById("temp-container"),
-    getTHData('get_thp.php?token=<? echo $token ?>'),
+    getData('get.php?token=<? echo $token ?>&key=temp'),
     {
         strokeWidth: 0.7,
-        rollPeriod: 10,
+        drawPoints: false,
+        pointsize: 1,
+        rollPeriod: 5,
         showRoller: true,
         ylabel: 'Temp. (&deg;C)',
-        y2label: 'Humidity (%)',
-        labels: ['date', 'temp', 'humidity' ],
-        colors: [ '#910000', '#2F9DAD' ],
-        humidity: {
-            axis: { },
-        },
+        labels: ['date', 'y'],
+        colors: [ '#910000' ],
     }
 );
+
+new Dygraph(
+    document.getElementById("humidity-container"),
+    getData('get.php?token=<? echo $token ?>&key=humidity'),
+    {
+        strokeWidth: 0.7,
+        drawPoints: false,
+        pointsize: 1,
+        rollPeriod: 5,
+        showRoller: true,
+        ylabel: 'Humidity (%)',
+        labels: ['date', 'y'],
+        colors: [ '#2F9DAD' ],
+    }
+);
+
 new Dygraph(
     document.getElementById("pressure-container"),
     getData('get.php?token=<? echo $token ?>&key=pressure'),
@@ -214,7 +247,7 @@ new Dygraph(
         strokeWidth: 0.7,
         drawPoints: false,
         pointsize: 1,
-        rollPeriod: 40,
+        rollPeriod: 5,
         showRoller: true,
         ylabel: 'Wind speed (m/s)',
         valueRange: [ 0, null ],
@@ -232,7 +265,7 @@ new Dygraph(
         rollPeriod: 1,
         showRoller: true,
         ylabel: 'Wind direction (&deg;)',
-        valueRange: [ 0, 360 ],
+        valueRange: [ 0, 1100 ],
         labels: ['date', 'y'],
         colors: [ '#f28f43' ],
     }
