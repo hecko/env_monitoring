@@ -1,11 +1,11 @@
-van#include <Wire.h>
+#include <Wire.h>
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BMP085_U.h>
 #include "DHT.h"
 
 Adafruit_BMP085_Unified bmp = Adafruit_BMP085_Unified(10085);
 
-#define WV_PIN  A1 //wind vane potencioneter sensor
+#define WV_PIN  A3 //wind vane potencioneter sensor
 #define LED_PIN 4
 #define DHTPIN  7  //DHT temp + humidity sensor
 #define DHTTYPE DHT22   // DHT 22  (AM2302)
