@@ -70,7 +70,7 @@ function getLast(token, key, unit, dec) {
     $.ajax({
           'async': false,
           'global': false,
-          'url': 'get.php?last=1&token=' + token + '&key=' + key,
+          'url': '/get/' + token + '/' + key + '/?last=1',
           'dataType': "json",
           'success': function (data) {
               if (isNaN(data[1])) {
@@ -90,7 +90,7 @@ function getLastLocation(token) {
     $.ajax({
           'async': false,
           'global': false,
-          'url': 'get.php?last=1&token=' + token + '&key=location',
+          'url': '/get/' + token + '/location',
           'dataType': "json",
           'success': function (data) {
               $('#last_location').html(data[1]);
@@ -107,7 +107,7 @@ function getLastBeat(token) {
     $.ajax({
           'async': false,
           'global': false,
-          'url': 'get.php?last=1&token=' + token + '&key=beat',
+          'url': '/get/' + token + '/beat/?last=1',
           'dataType': "json",
           'success': function (data) {
               // $('#last_beat').html(data[1]);
@@ -164,26 +164,9 @@ function getTHData(query) {
 
 <script type="text/javascript">
 
-//new Dygraph(
-//    document.getElementById("temp-container"),
-//    getTHData('get_thp.php?token=<? echo $token ?>'),
-//    {
-//        strokeWidth: 0.7,
-//        rollPeriod: 10,
-//        showRoller: true,
-//        ylabel: 'Temp. (&deg;C)',
-//        y2label: 'Humidity (%)',
-//        labels: ['date', 'temp', 'humidity' ],
-//        colors: [ '#910000', '#2F9DAD' ],
-//        humidity: {
-//            axis: { },
-//        },
-//    }
-//);
-
 new Dygraph(
     document.getElementById("temp-container"),
-    getData('get.php?token=<? echo $token ?>&key=temp'),
+    getData('/get/<? echo $token ?>/temp'),
     {
         strokeWidth: 0.7,
         drawPoints: false,
@@ -198,7 +181,7 @@ new Dygraph(
 
 new Dygraph(
     document.getElementById("humidity-container"),
-    getData('get.php?token=<? echo $token ?>&key=humidity'),
+    getData('/get/<? echo $token ?>/humidity'),
     {
         strokeWidth: 0.7,
         drawPoints: false,
@@ -213,7 +196,7 @@ new Dygraph(
 
 new Dygraph(
     document.getElementById("pressure-container"),
-    getData('get.php?token=<? echo $token ?>&key=pressure'),
+    getData('/get/<? echo $token ?>/pressure'),
     {
         strokeWidth: 0.7,
         drawPoints: false,
@@ -227,7 +210,7 @@ new Dygraph(
 );
 new Dygraph(
     document.getElementById("light-container"),
-    getData('get.php?token=<? echo $token ?>&key=light'),
+    getData('/get/<? echo $token ?>/light'),
     {
         strokeWidth: 0.7,
         drawPoints: false,
@@ -242,7 +225,7 @@ new Dygraph(
 );
 new Dygraph(
     document.getElementById("wind_speed-container"),
-    getData('get.php?token=<? echo $token ?>&key=wind_speed'),
+    getData('/get/<? echo $token ?>/wind_speed'),
     {
         strokeWidth: 0.7,
         drawPoints: false,
@@ -257,7 +240,7 @@ new Dygraph(
 );
 new Dygraph(
     document.getElementById("wind_direction-container"),
-    getData('get.php?token=<? echo $token ?>&key=wind_direction'),
+    getData('/get/<? echo $token ?>/wind_direction'),
     {
         strokeWidth: 0.7,
         drawPoints: false,

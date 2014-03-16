@@ -7,9 +7,9 @@ require('db.php');
     <meta charset="utf-8">
     <title><? echo $title ?></title>
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400,700' rel='stylesheet' type='text/css'>
-    <link href='style.css' rel='stylesheet' type="text/css">
+    <link href='/css/style.css' rel='stylesheet' type="text/css">
     <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
-    <script src="dygraph-combined.js"></script>
+    <script src="http://dygraphs.com/1.0.1/dygraph-combined.js"></script>
   </head>
 
 <style>
@@ -20,11 +20,11 @@ require('db.php');
         height: 21px;
         padding: 5px;
         padding-left: 100px;
-        box-shadow: 0px 2px 5px #888888;
+        box-shadow: 0px 0px 0px #aaaaaa;
         font-family: 'Open Sans', sans-serif;
         font-weight: 300;
         float: left;
-        background: rgba(200,200,200,0.8);
+        background: rgba(200,200,200,0.4);
         z-index: 100;
       }
 

@@ -3,12 +3,6 @@ require('config.php');
 require('db.php');
 openlog("weather_log", LOG_PID | LOG_PERROR, LOG_LOCAL0);
 
-#if ($_SERVER['REMOTE_ADDR'] != '86.179.123.68') {
-#  echo "dragons here";
-#  syslog(LOG_INFO, "unauth: ". $_SERVER['REMOTE_ADDR']);
-#  die;
-#}
-
 $json = file_get_contents('php://input');
 syslog(LOG_INFO, "incomming data: ". $json);
 $d = json_decode($json, true);
@@ -21,7 +15,13 @@ $sql = "INSERT INTO data (`token`, `key`, `val`, `time`) VALUES ('"
 
 syslog(LOG_INFO, "sql insert: " . $sql);
 
-mysqli_query($con,$sql);
+if (!mysqli_query($con,$sql)) {
+  header("X-Status: Problem inserting into database!", false);
+} else {
+  header("X-Status: OK inserting into DB!", false);
+}
+header("X-SQL: $sql");
 
 mysqli_close($con);
+
 ?>

@@ -23,9 +23,16 @@ while ( $row = mysqli_fetch_array($result, MYSQL_ASSOC) ) {
 };
 
 if (isset($last)) {
+  header("X-Info: All grand!", false);
   echo json_encode(array_pop($dataset));
 } else {
-  echo json_encode($dataset);
+  if (!$dataset) {
+    header("X-Info: Something went wrong!", false);
+    header("X-SQL: $sql", false);
+  } else {
+    header("X-Info: All grand!", false);
+    echo json_encode($dataset);
+  }
 }
 
 ?>
