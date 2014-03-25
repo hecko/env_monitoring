@@ -24,11 +24,12 @@ utils.args = parser.parse_args()
 def read_sensor(pin):
     out = {}
     text = subprocess.check_output(["../external/Adafruit-Raspberry-Pi-Python-Code/Adafruit_DHT_Driver/Adafruit_DHT", "2302", str(pin)])
+    if args.verbose:
+        print text
 
     # split the two lines
     lines = text.split("\n")
 
-    # make sure the crc is valid
     if len(lines) == 4:
         out['temp'] = float(lines[2].split()[2])
         out['humi'] = float(lines[2].split()[6])
