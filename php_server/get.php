@@ -8,7 +8,12 @@ if (isset($_GET['last'])) {
 }
 $token = $_GET['token'];
 $key   = $_GET['key'];
-$since = time() - (3600*24*8); //last X days
+if (isset($_GET['days'])) {
+    $last_days = $_GET['days'];
+} else {
+    $last_days = 8;
+}
+$since = time() - (3600*24*$last_days); //last X days
 
 $sql = "SELECT * FROM data WHERE `token`='$token' AND `key`='$key' AND `time` >= $since ORDER BY `id` ASC";
 $result = mysqli_query($con,$sql);
@@ -26,9 +31,10 @@ if (isset($last)) {
   header("X-Info: All grand!", false);
   echo json_encode(array_pop($dataset));
 } else {
-  if (!$dataset) {
+  if (!isset($dataset)) {
     header("X-Info: Something went wrong!", false);
     header("X-SQL: $sql", false);
+    echo "$sql";
   } else {
     header("X-Info: All grand!", false);
     echo json_encode($dataset);
