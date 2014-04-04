@@ -6,11 +6,11 @@
 #script is intended to be run fron cron every 5 or so minutes
 #
 
+import argparse
 import lib.utils as utils
 import subprocess
 import sys
 from tendo import singleton
-import argparse
 
 me = singleton.SingleInstance() # will sys.exit(-1) if other instance is running
 
@@ -24,8 +24,7 @@ utils.args = parser.parse_args()
 def read_sensor(pin):
     out = {}
     text = subprocess.check_output(["../external/Adafruit-Raspberry-Pi-Python-Code/Adafruit_DHT_Driver/Adafruit_DHT", "2302", str(pin)])
-    if args.verbose:
-        print text
+    utils.info(text)
 
     # split the two lines
     lines = text.split("\n")
