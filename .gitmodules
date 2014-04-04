@@ -1,0 +1,3 @@
+[submodule "external/sakis3g-source"]
+	path = external/sakis3g-source
+	url = https://github.com/Trixarian/sakis3g-source.git
