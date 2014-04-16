@@ -10,6 +10,11 @@
 </style>
 <div id="footer-div">
   <span class="footer">Author: <a href="mailto:maco@blava.net">Marcel Hecko</a> (2014)</span>
+  <br>
+<?php
+$actual_link = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+print '<img src="https://chart.googleapis.com/chart?chs=150x150&cht=qr&choe=UTF-8&chl='.urlencode($actual_link).'">';
+?>
 </div>
 </body>
 </html>
