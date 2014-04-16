@@ -3,6 +3,8 @@ if (isset($_GET['token'])) {
   $token = $_GET['token'];
 }
 
+$title = "token: $token";
+
 include('header.php');
 ?>
 <meta http-equiv="refresh" content="600">
@@ -85,7 +87,7 @@ new Dygraph(
         strokeWidth: 0.7,
         drawPoints: false,
         pointsize: 1,
-        rollPeriod: 5,
+        rollPeriod: 10,
         showRoller: true,
         ylabel: 'Temp. (&deg;C)',
         labels: ['date', 'y'],

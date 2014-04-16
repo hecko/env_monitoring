@@ -5,7 +5,5 @@ $db_user      = 'iboredco_mac';
 $db_pass      = 'testing123';
 $db_db        = 'iboredco_weather';
 
-$title        = "title";
-
-$has_gps      = 1; // 0 - NO, 1 - YES
+$has_gps      = 0; // 0 - NO, 1 - YES
 ?>

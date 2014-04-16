@@ -3,6 +3,8 @@ if (isset($_GET['token'])) {
   $token = $_GET['token'];
 }
 
+$title = "$token";
+
 include('header.php');
 ?>
 <meta http-equiv="refresh" content="600">
