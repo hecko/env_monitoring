@@ -4,16 +4,17 @@ header('Content-type: application/json');
 require('config.php');
 require('db.php');
 
-$supported = array('list_keys', 'help');
+$supported = array('get', 'last', 'list_keys', 'help');
 
 if ($_GET['cmd']) {
     $cmd = 'help';
     if (isset($_GET['token'])) {
-        $token = $_GET['token'];
+        $data['token'] = $_GET['token'];
         $cmd = $_GET['cmd'];
     } elseif ($_GET['cmd'] == 'help') {
-        $token = 'help';
+        $data['token'] = '_help';
     }
+    $data['cmd'] = $cmd;
 } else {
     $data['error'] = "both cmd and token has to be defined";
     echo json_encode($data);
@@ -29,14 +30,12 @@ if ($cmd == 'help') {
 }
 
 if ($cmd == 'list_keys') {
-    $sql = "SELECT DISTINCT `key` FROM `data` WHERE `token`='$token'";
+    $sql = "SELECT DISTINCT `key` FROM `data` WHERE `token`='" . $data['token'] . "'";
     mysqli_real_escape_string($con,$sql);
     if (!$result = mysqli_query($con,$sql)) {
         $data['db_error'] = mysqli_error($con);
         flush_now($data);
     };
-
-    $data['token'] = $token;
 
     while ( $row = mysqli_fetch_array($result, MYSQL_ASSOC) ) {
         $data['items']['list'] = $row['key'];
@@ -45,10 +44,49 @@ if ($cmd == 'list_keys') {
     mysqli_close($con);
 }
 
-$data['timestamp'] = time();
+if ($cmd == 'last') {
+    $data['key'] = $_GET['key'];
+
+    $sql = "SELECT * FROM data WHERE `token`='" . $data['token'] . "' AND `key`='" . $data['key'] . "' ORDER BY `id` DESC LIMIT 1";
+    $result = mysqli_query($con,$sql);
+
+    while ( $row = mysqli_fetch_array($result, MYSQL_ASSOC) ) {
+        if (is_numeric($row['val'])) {
+            $val = floatval($row['val']);
+        } else {
+            $val = $row['val'];
+        }
+        $data['last'] = array(intval($row['time'] * 1000), $val );
+    };
+};
+
+if ($cmd == 'get') {
+    $key = $_GET['key'];
+    if (isset($_GET['days'])) {
+        $last_days = $_GET['days'];
+    } else {
+        $last_days = 8;
+    }
+    $data['since'] = time() - (3600*24*$last_days); //last X days
+
+    $sql = "SELECT * FROM data WHERE `token`='" . $data['token'] . "' AND `key`='$key' AND `time` >= " . $data['since'] . " ORDER BY `id` ASC";
+    $result = mysqli_query($con,$sql);
+
+    while ( $row = mysqli_fetch_array($result, MYSQL_ASSOC) ) {
+        if (is_numeric($row['val'])) {
+            $val = floatval($row['val']);
+        } else {
+            $val = $row['val'];
+        }
+        $data['set'][] = array(intval($row['time'] * 1000), $val );
+    };
+};
+
 flush_now($data);
 
 function flush_now($data) {
+    $data['timestamp'] = time();
+    header("X-Info: :)", false);
     echo json_encode($data);
     flush();
     die;
