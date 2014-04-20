@@ -1,4 +1,8 @@
 <?php
+include("functions.php");
+
+openlog("temperme_log", LOG_PID | LOG_PERROR, LOG_LOCAL0);
+
 date_default_timezone_set("Europe/London");
 $app_location = 'Edinburgh';
 $db_user      = 'iboredco_mac';

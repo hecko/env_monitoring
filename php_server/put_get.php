@@ -1,7 +1,6 @@
 <?php
 require('config.php');
 require('db.php');
-openlog("weather_log", LOG_PID | LOG_PERROR, LOG_LOCAL0);
 
 syslog(LOG_INFO, "incomming data: ". $_GET);
 

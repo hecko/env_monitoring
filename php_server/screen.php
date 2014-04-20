@@ -76,7 +76,7 @@ function getLast(token, key, unit, dec) {
           'dataType': "json",
           'success': function (data) {
               if (isNaN(data['last'])) {
-                  $('#last_' + key).html(data['last'][1]);
+                  $('#last_' + key).html(data['last'][1] + unit);
               } else {
                   $('#last_' + key).html(Number(data['last'][1]).toFixed(dec) + unit);
               }

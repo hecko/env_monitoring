@@ -9,8 +9,10 @@ $supported = array('get', 'last', 'list_keys', 'help');
 if ($_GET['cmd']) {
     $cmd = 'help';
     if (isset($_GET['token'])) {
-        $data['token'] = $_GET['token'];
-        $cmd = $_GET['cmd'];
+        $cmd               = $_GET['cmd'];
+        $data['token']     = $_GET['token'];
+        $data['device_id'] = get_device_id($con, 'token', $data['token']);
+        header("X-did: " . $data['device_id']);
     } elseif ($_GET['cmd'] == 'help') {
         $data['token'] = '_help';
     }
@@ -30,8 +32,7 @@ if ($cmd == 'help') {
 }
 
 if ($cmd == 'list_keys') {
-    $sql = "SELECT DISTINCT `key` FROM `data` WHERE `token`='" . $data['token'] . "'";
-    mysqli_real_escape_string($con,$sql);
+    $sql = "SELECT DISTINCT `key` FROM `data` WHERE `device_id`='" . mysqli_real_escape_string($con, $data['device_id']) . "'";
     if (!$result = mysqli_query($con,$sql)) {
         $data['db_error'] = mysqli_error($con);
         flush_now($data);
@@ -47,7 +48,7 @@ if ($cmd == 'list_keys') {
 if ($cmd == 'last') {
     $data['key'] = $_GET['key'];
 
-    $sql = "SELECT * FROM data WHERE `token`='" . $data['token'] . "' AND `key`='" . $data['key'] . "' ORDER BY `id` DESC LIMIT 1";
+    $sql = "SELECT * FROM data WHERE `device_id`='" . $data['device_id'] . "' AND `key`='" . $data['key'] . "' ORDER BY `id` DESC LIMIT 1";
     $result = mysqli_query($con,$sql);
 
     while ( $row = mysqli_fetch_array($result, MYSQL_ASSOC) ) {
@@ -69,7 +70,7 @@ if ($cmd == 'get') {
     }
     $data['since'] = time() - (3600*24*$last_days); //last X days
 
-    $sql = "SELECT * FROM data WHERE `token`='" . $data['token'] . "' AND `key`='$key' AND `time` >= " . $data['since'] . " ORDER BY `id` ASC";
+    $sql = "SELECT * FROM data WHERE `device_id`='" . $data['device_id'] . "' AND `key`='$key' AND `time` >= " . $data['since'] . " ORDER BY `id` ASC";
     $result = mysqli_query($con,$sql);
 
     while ( $row = mysqli_fetch_array($result, MYSQL_ASSOC) ) {
@@ -85,6 +86,7 @@ if ($cmd == 'get') {
 flush_now($data);
 
 function flush_now($data) {
+    unset($data['device_id']);
     $data['timestamp'] = time();
     header("X-Info: :)", false);
     echo json_encode($data);
