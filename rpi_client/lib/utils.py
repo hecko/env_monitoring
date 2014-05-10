@@ -13,7 +13,7 @@ def info(toprint):
     if (args.verbose):
         print toprint
 
-def send_to_cloud(what, value):
+def send_to_cloud(key, value, serial):
     if (not args.send):
         info("Not sending flag set!")
         return
@@ -21,11 +21,12 @@ def send_to_cloud(what, value):
     config.read('config.txt')
     url   = config.get("rpi", "server_put")
     token = config.get("rpi", "token")
-    data = { 'token': token,
+    data = { 'token': 't3st',
              'data': [ {
                       'timestamp': int(time.time()),
-                      'key':       what,
+                      'key':       key,
                       'val':       value,
+                      'serial':    serial,
                      } ]
            }
     info(data)
