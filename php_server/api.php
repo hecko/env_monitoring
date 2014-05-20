@@ -83,7 +83,7 @@ if ($data['cmd'] == 'get') {
     if (isset($_GET['days'])) {
         $last_days = $_GET['days'];
     } else {
-        $last_days = 8;
+        $last_days = 3;
     }
     $data['since'] = time() - (3600*24*$last_days); //last X days
 

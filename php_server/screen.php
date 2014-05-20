@@ -172,7 +172,7 @@ new Dygraph(
         strokeWidth: 0.0,
         drawPoints: true,
         pointsize: 1,
-        rollPeriod: 1,
+        rollPeriod: 1000,
         showRoller: true,
         ylabel: 'Temp. (&deg;C)',
         labels: ['date', 'y'],
