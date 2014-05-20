@@ -63,7 +63,8 @@ if ($data['cmd'] == 'list_sensors') {
 }
 
 if ($data['cmd'] == 'last') {
-    $sql = "SELECT * FROM data WHERE `device_id`='" . $data['device_id'] . "' ORDER BY `id` DESC LIMIT 1";
+    $data['key'] = $_GET['key'];
+    $sql = "SELECT * FROM data WHERE `device_id`='" . $data['device_id'] . "' AND `key`='" . $data['key'] . "' ORDER BY `id` DESC LIMIT 1";
     $result = mysqli_query($con,$sql);
 
     while ( $row = mysqli_fetch_array($result, MYSQL_ASSOC) ) {
@@ -73,6 +74,7 @@ if ($data['cmd'] == 'last') {
             $val = $row['val'];
         }
         $data['last'] = array(intval($row['time'] * 1000), $val );
+        $data['unit'] = $row['unit'];
     };
 
     $data['device_name'] = get_device_name($con, 'id', $data['device_id']);

@@ -32,12 +32,12 @@ div .last_div {
 var alias = "<? echo $alias; ?>";
 
 setInterval(function() {
-  getKeys();
+  getTokens();
 },50000);
 
-getKeys();
+getTokens();
 
-function getKeys() {
+function getTokens() {
   $('#last_data').html("refreshing...");
   var json = (function () {
     var json = null;
@@ -49,8 +49,8 @@ function getKeys() {
           'success': function (data) {
               $('#last_data').html("");
               var index;
-              for (index = 0; index < data['sensor_tokens'].length; ++index) {
-                  getLast(data['sensor_tokens'][index], '', 1);
+              for (index = 0; index < data.sensor_tokens.length; ++index) {
+                  getLast(data.sensor_tokens[index], 'temp');
                   $('#last_data').css('display', 'inline-block');
               }
           }
@@ -58,24 +58,21 @@ function getKeys() {
   })();
 }
 
-function getLast(token, unit, dec) {
+function getLast(token, key) {
   var json = (function () {
     var json = null;
     $.ajax({
           'async': false,
           'global': false,
-          'url': '/api/last?token=' + token,
+          'url': '/api/last?token=' + token + '&key=' + key,
           'dataType': "json",
           'success': function (data) {
-              $('#last_data').append(data['device_name']);
-              $('#last_data').append(' (' + data['token'] + ') ');
-              if (isNaN(data['last'])) {
-                  $('#last_data').append(data['last'][1] + unit + '&deg;C ');
-              } else {
-                  $('#last_data').append(Number(data['last'][1]).toFixed(dec) + unit);
+              if (typeof data.last !== 'undefined') {
+                  $('#last_data').append(data.device_name + ' ');
+                  $('#last_data').append(Number(data.last[1]).toFixed(2) + data.unit + " ");
+                  $('#last_data').append(((new Date() - new Date(data.last[0]))/1000/60).toFixed(0) + " min ago ");
+                  $('#last_data').append('<a href=/screen/' + data.token + ">graph</a><br>");
               }
-              $('#last_data').append(((new Date() - new Date(data['last'][0]))/1000/60).toFixed(0) + " min ago ");
-              $('#last_data').append('<a href=/screen/' + data['token'] + ">graph</a><br>");
           }
     });
   })();

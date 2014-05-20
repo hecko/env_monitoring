@@ -1,6 +1,7 @@
 <?php
 if (isset($_GET['token'])) {
   $token = $_GET['token'];
+  $key   = $_GET['key'];
 }
 
 $title = "token: $token";
@@ -25,19 +26,37 @@ div .last_div {
   <div style="text-align:center; margin-bottom: 50px;">
     <div class="last_div" style="background: #910000">
       <span style="color: white; font-size: 10pt">Temp:<br></span>
-      <span id="last_temp" class="last_value">loading last value...</span><br>
-      <span id="last_temp_time" style="color: white; font-size: 10pt"></span>
+      <span id="last_<? echo $key ?>" class="last_value">loading last value...</span><br>
+      <span id="last_<? echo $key ?>_time" style="color: white; font-size: 10pt"></span>
     </div>
   </div>
-  <div id="temp-container" style="clear: both; min-width: 600px; height: 150px; margin: 0 auto"></div>
+  <div id="<? echo $key ?>-container" style="clear: both; min-width: 600px; height: 150px; margin: 0 auto"></div>
 </div>
 
 <script>
 setInterval(function() {
-    getLast('<? echo $token ?>','temp','&deg;C',1);
+    getLast('<? echo $token ?>','<? echo $key ?>','&deg;C',1);
+    g.updateOptions({
+        file: getData('/api/get?token=<? echo $token ?>&key=<? echo $key ?>'),
+    });
 },50000);
 
-getLast('<? echo $token ?>','temp','&deg;C',1);
+getLast('<? echo $token ?>','<? echo $key ?>','&deg;C',1);
+
+g = new Dygraph(
+    document.getElementById("<? echo $key ?>-container"),
+    getData('/api/get?token=<? echo $token ?>&key=<? echo $key ?>'),
+    {
+        strokeWidth: 0.0,
+        drawPoints: true,
+        pointsize: 1,
+        rollPeriod: 10,
+        showRoller: true,
+        ylabel: 'Temp. (&deg;C)',
+        labels: ['date', 'y'],
+        colors: [ '#910000' ],
+    }
+);
 
 function getLast(token, key, unit, dec) {
   var json = (function () {
@@ -75,26 +94,6 @@ function getData(query) {
   });
   return json;
 };
-
-</script>
-
-<script type="text/javascript">
-
-new Dygraph(
-    document.getElementById("temp-container"),
-    getData('/api/get?token=<? echo $token ?>&key=temp'),
-    {
-        strokeWidth: 0.7,
-        drawPoints: false,
-        pointsize: 1,
-        rollPeriod: 10,
-        showRoller: true,
-        ylabel: 'Temp. (&deg;C)',
-        labels: ['date', 'y'],
-        colors: [ '#910000' ],
-    }
-);
-
 </script>
 
 <?php
