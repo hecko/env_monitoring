@@ -22,7 +22,7 @@ $d = json_decode($json, true);
 //}
 
 foreach ($d['data'] as $i) {
-    if (!$device_id = get_device_id($con, 'token', $i['serial'])) {
+    if (!$device_id = get_device_id($con, 'serial', $i['serial'])) {
         header("X-cube_cx: Device with that serial not found!");
         header('HTTP/1.1 400');
         return;
