@@ -1,7 +1,15 @@
 <?php
-if (isset($_GET['token'])) {
+if (isset($_GET['token'], $_GET['key'])) {
   $token = $_GET['token'];
   $key   = $_GET['key'];
+} else {
+  die;
+}
+
+if (isset($_GET['days'])) {
+  $days = $_GET['days'];
+} else {
+  $days = 1;
 }
 
 $title = "token: $token";
@@ -9,23 +17,10 @@ $title = "token: $token";
 include('header.php');
 ?>
 <meta http-equiv="refresh" content="600">
-<style>
-div .last_div {
-  margin: 0px;
-  padding: 5px;
-  width: 160px;
-  text-align: center;
-  display:inline-block;
-}
-.last_value {
-  color: white;
-  font-size: 30pt;
-}
-</style>
 <div id="offsetDiv">
   <div style="text-align:center; margin-bottom: 50px;">
     <div class="last_div" style="background: #910000">
-      <span style="color: white; font-size: 10pt">Temp:<br></span>
+      <span style="color: white; font-size: 10pt">Last <? echo $key; ?> value:<br></span>
       <span id="last_<? echo $key ?>" class="last_value">loading last value...</span><br>
       <span id="last_<? echo $key ?>_time" style="color: white; font-size: 10pt"></span>
     </div>
@@ -37,7 +32,7 @@ div .last_div {
 setInterval(function() {
     getLast('<? echo $token ?>','<? echo $key ?>','&deg;C',1);
     g.updateOptions({
-        file: getData('/api/get?token=<? echo $token ?>&key=<? echo $key ?>'),
+        file: getData('/api/get?token=<? echo $token ?>&key=<? echo $key ?>&days=<? echo $days ?>'),
     });
 },50000);
 
@@ -45,12 +40,12 @@ getLast('<? echo $token ?>','<? echo $key ?>','&deg;C',1);
 
 g = new Dygraph(
     document.getElementById("<? echo $key ?>-container"),
-    getData('/api/get?token=<? echo $token ?>&key=<? echo $key ?>'),
+    getData('/api/get?token=<? echo $token ?>&key=<? echo $key ?>&days=<? echo $days ?>'),
     {
         strokeWidth: 0.0,
         drawPoints: true,
         pointsize: 1,
-        rollPeriod: 10,
+        rollPeriod: 1,
         showRoller: true,
         ylabel: 'Temp. (&deg;C)',
         labels: ['date', 'y'],
@@ -58,7 +53,7 @@ g = new Dygraph(
     }
 );
 
-function getLast(token, key, unit, dec) {
+function getLast(token, key) {
   var json = (function () {
     var json = null;
     $.ajax({
@@ -68,9 +63,7 @@ function getLast(token, key, unit, dec) {
           'dataType': "json",
           'success': function (data) {
               if (isNaN(data[1])) {
-                  $('#last_' + key).html(data['last'][1] + unit);
-              } else {
-                  $('#last_' + key).html(Number(data['last'][1]).toFixed(dec) + unit);
+                  $('#last_' + key).html(data['last'][1] + data['unit']);
               }
               $('#last_' + key + '_time').html(((new Date() - new Date(data['last'][0]))/1000/60).toFixed(0) + " min ago");
           }

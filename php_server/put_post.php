@@ -31,18 +31,14 @@ foreach ($d['data'] as $i) {
         $i['key'] = 'temp';
         $i['val'] = $i['val'] / 100;
     };
-    if (($i['val'] >= 80) OR ($i['val'] < 0)) {
-        header("X-cube_cx: Wrong value - either too high, or too low!");
-        header('HTTP/1.1 400');
-        return;
-    }
-    $sql = "INSERT INTO data (`device_id`, `key`, `val`, `time`) VALUES ('"
+    $sql = "INSERT INTO data (`device_id`, `key`, `val`, `unit`, `time`) VALUES ('"
         .mysqli_real_escape_string($con,$device_id)."', '"
-        .mysqli_real_escape_string($con,$i['key'])."', '"
-        .mysqli_real_escape_string($con,$i['val'])."', "
+        .mysqli_real_escape_string($con,$i['key'])."', "
+        .mysqli_real_escape_string($con,$i['val']).", '"
+        .mysqli_real_escape_string($con,$i['unit'])."', "
         .mysqli_real_escape_string($con,$i['timestamp']).")";
 
-    //syslog(LOG_INFO, $sql);
+    syslog(LOG_INFO, $sql);
     mysqli_query($con,$sql);
 }
 

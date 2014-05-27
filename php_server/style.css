@@ -4,11 +4,23 @@ body {
 }
 
 a {
-/*  color: #00B7FF;  */
   color: #000000;
   text-decoration: none;
 }
 
 a:hover {
   text-decoration: underline;
+}
+
+div .last_div {
+  margin: 0px;
+  padding: 5px;
+  width: 220px;
+  text-align: center;
+  display:inline-block;
+}
+
+.last_value {
+  color: #eeeeee;
+  font-size: 30pt;
 }
