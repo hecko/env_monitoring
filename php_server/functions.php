@@ -1,9 +1,9 @@
 <?php
 
-function get_device_id($con, $field, $match) {
-    $sql = "SELECT * FROM `devices` WHERE `$field`='$match' LIMIT 1";
+function get_node_id($con, $field, $match) {
+    $sql = "SELECT * FROM `nodes` WHERE `$field`='$match' LIMIT 1";
     if (!$result = mysqli_query($con, $sql)) {
-        syslog(LOG_ERR, "DB error: " . mysqli_error($con));
+        echo "DB error: " . mysqli_error($con);
         die("db issue");
     }
     $row = mysqli_fetch_assoc($result);
@@ -14,9 +14,9 @@ function get_device_id($con, $field, $match) {
 }
 
 function get_device_name($con, $field, $match) {
-    $sql = "SELECT * FROM `devices` WHERE `$field`='$match' LIMIT 1";
+    $sql = "SELECT * FROM `nodes` WHERE `$field`='$match' LIMIT 1";
     if (!$result = mysqli_query($con, $sql)) {
-        syslog(LOG_ERR, "DB error: " . mysqli_error($con));
+        echo mysqli_error($con);
         die("db issue");
     }
     $row = mysqli_fetch_assoc($result);

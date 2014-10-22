@@ -5,7 +5,7 @@ require('db.php');
 <!DOCTYPE html>
   <head>
     <meta charset="utf-8">
-    <title><? //echo get_device_name($con, 'token', $token); ?></title>
+    <title><? echo $node_serial ?></title>
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400,700' rel='stylesheet' type='text/css'>
     <link href='/css/style.css' rel='stylesheet' type="text/css">
     <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>

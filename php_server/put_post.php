@@ -2,34 +2,29 @@
 require('config.php');
 require('db.php');
 
-syslog(LOG_INFO, "put_post call");
+$p = $_POST;
 
-$json = file_get_contents('php://input');
+// print_r($p);
 
-syslog(LOG_INFO, "Incomming data: ". $json);
-
-$json = preg_replace('/\'/', '"', $json);
-
-$d = json_decode($json, true);
-
-foreach ($d['data'] as $i) {
-    if (!$device_id = get_device_id($con, 'serial', $i['serial'])) {
-        header("X-cube_cx: Device with that serial not found!");
-        header('HTTP/1.1 400');
-        return;
-    }
-
-    $sql = "INSERT INTO data (`device_id`, `key`, `val`, `unit`, `time`) VALUES ('"
-        .mysqli_real_escape_string($con,$device_id)."', '"
-        .mysqli_real_escape_string($con,$i['key'])."', "
-        .mysqli_real_escape_string($con,$i['val']).", '"
-        .mysqli_real_escape_string($con,$i['unit'])."', "
-        .mysqli_real_escape_string($con,$i['timestamp']).")";
-
-    syslog(LOG_INFO, $sql);
-    mysqli_query($con,$sql);
+if (!$node_id = get_node_id($con, 'node_serial', $p['node_serial'])) {
+    echo "No such node_serial " . $p['node_serial'];
+    die;
 }
 
+$sql = "INSERT INTO data (`node_id`, `key`, `val`, `unit`, `timestamp`) VALUES ('"
+    .mysqli_real_escape_string($con,$node_id)."', '"
+    .mysqli_real_escape_string($con,$p['key'])."', "
+    .mysqli_real_escape_string($con,$p['val']).", '"
+    .mysqli_real_escape_string($con,$p['unit'])."', "
+    .mysqli_real_escape_string($con,$p['timestamp']).")";
+
+// echo $sql;
+
+if (mysqli_query($con,$sql)) {
+  echo "OK";
+} else {
+  echo mysql_error();
+}
 mysqli_close($con);
 
 ?>

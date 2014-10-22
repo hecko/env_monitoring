@@ -7,15 +7,9 @@ require('db.php');
 $supported = array('get', 'last', 'list_keys', 'list_sensors', 'help');
 
 if ($_GET['cmd']) {
-    if (isset($_GET['alias'])) {
-        $data['alias'] = $_GET['alias'];
-    }
-    if (isset($_GET['major'])) {
-        $_GET['token'] = $_GET['major'];
-    }
-    if (isset($_GET['token'])) {
-        $data['token']     = $_GET['token'];
-        $data['device_id'] = get_device_id($con, 'token', $data['token']);
+    if (isset($_GET['node_serial'])) {
+        $data['node_serial'] = $_GET['node_serial'];
+        $data['node_id'] = get_node_id($con, 'node_serial', $data['node_serial']);
     }
     $data['cmd'] = $_GET['cmd'];
 } else {
@@ -64,20 +58,15 @@ if ($data['cmd'] == 'list_sensors') {
 
 if ($data['cmd'] == 'last') {
     $data['key'] = $_GET['key'];
-    $sql = "SELECT * FROM data WHERE `device_id`='" . $data['device_id'] . "' AND `key`='" . $data['key'] . "' ORDER BY `id` DESC LIMIT 1";
+    $sql = "SELECT * FROM data WHERE `node_id`='" . $data['node_id'] . "' AND `key`='" . $data['key'] . "' ORDER BY `timestamp` DESC LIMIT 1";
     $result = mysqli_query($con,$sql);
 
-    while ( $row = mysqli_fetch_array($result, MYSQL_ASSOC) ) {
-        if (is_numeric($row['val'])) {
-            $val = floatval($row['val']);
-        } else {
-            $val = $row['val'];
-        }
-        $data['last'] = array(intval($row['time'] * 1000), $val );
-        $data['unit'] = $row['unit'];
-    };
+    $row = mysqli_fetch_array($result, MYSQL_ASSOC);
 
-    $data['device_name'] = get_device_name($con, 'id', $data['device_id']);
+    $data['last']        = array(intval($row['timestamp'] * 1000), floatval($row['val']) );
+    $data['last_ago_ms'] = (time() * 1000) - intval($row['timestamp'] * 1000);
+    $data['unit']        = $row['unit'] ? null : 'x';
+    $data['node_name']   = get_device_name($con, 'id', $data['node_id']);
 };
 
 if ($data['cmd'] == 'get') {
@@ -89,8 +78,12 @@ if ($data['cmd'] == 'get') {
     }
     $data['since'] = time() - (3600*24*$last_days); //last X days
 
-    $sql = "SELECT * FROM data WHERE `device_id`='" . $data['device_id'] . "' AND `key`='$key' AND `time` >= " . $data['since'] . " ORDER BY `id` ASC";
-    $result = mysqli_query($con,$sql);
+    $sql = "SELECT * FROM data WHERE `node_id`='" . $data['node_id'] . "' AND `key`='$key'
+            AND `timestamp` >= " . $data['since'] . " ORDER BY `timestamp` ASC";
+    if (!$result = mysqli_query($con,$sql)) {
+      $data['error'][] = mysql_error();
+      $data['sql'][] = $sql;
+    };
 
     while ( $row = mysqli_fetch_array($result, MYSQL_ASSOC) ) {
         if (is_numeric($row['val'])) {
@@ -98,7 +91,7 @@ if ($data['cmd'] == 'get') {
         } else {
             $val = $row['val'];
         }
-        $data['set'][] = array(intval($row['time'] * 1000), $val );
+        $data['set'][] = array(intval($row['timestamp'] * 1000), $val );
     };
 };
 
@@ -106,7 +99,7 @@ flush_now($data);
 
 function flush_now($data) {
     unset($data['device_id']);
-    $data['timestamp'] = time();
+    $data['query_timestamp'] = time();
     header("X-Info: :)", false);
     echo json_encode($data);
     flush();
